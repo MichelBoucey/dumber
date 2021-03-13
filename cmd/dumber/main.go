@@ -38,29 +38,38 @@ func main() {
 	}
 	defer mdTmpFile.Close()
 
-	headerLine := regexp.MustCompile(`^(#{1,6})\s*([\d\.]*)\s*(.*)$`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
-		matches := headerLine.FindStringSubmatch(scanner.Text())
-		header := matches[1]
-		currentHeaderType := len(matches[1])
-		title := matches[3]
-		headerCounters[currentHeaderType]++
+		line := scanner.Text()
+		matches := headerLine.FindStringSubmatch(line)
 
-		for headerType := 1; headerType <= 6; headerType++ {
-			AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
-		}
+		if len(matches) == 4 {
+			header := matches[1]
+			currentHeaderType := len(matches[1])
+			title := matches[3]
+			headerCounters[currentHeaderType]++
 
-		_, err := io.WriteString(mdTmpFile, header+" "+section+" "+title+"\n")
-		if err != nil {
-			panic(err)
-		}
+			for headerType := 1; headerType <= 6; headerType++ {
+				AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
+			}
 
-		section = ""
+			_, err := io.WriteString(mdTmpFile, header+" "+section+" "+title+"\n")
+			if err != nil {
+				panic(err)
+			}
 
-		for i := currentHeaderType + 1; i <= 6; i++ {
-			headerCounters[i] = 0
+			section = ""
+
+			for i := currentHeaderType + 1; i <= 6; i++ {
+				headerCounters[i] = 0
+			}
+		} else {
+			_, err := io.WriteString(mdTmpFile, line+"\n")
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 
