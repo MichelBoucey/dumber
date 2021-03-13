@@ -2,15 +2,14 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"os"
+        "path"
+        "path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -19,25 +18,30 @@ func main() {
 
 	var headerCounters [7]int
 
-	var headerSection = regexp.MustCompile(`^(#{1,6})\s*(.*)$`)
+        mdFile,err := filepath.Abs(os.Args[1])
+	if err != nil {
+		log.Println(err)
+	}
 
-	var tmpFileName = ".dumber_" + RandomString(12) + ".tmp"
+        mdFileDir := path.Dir(mdFile)
 
-	mdFile, err := os.Open(os.Args[1])
+        tmpFile := mdFileDir + "/." + os.Args[1] + ".tmp"
+
+	mdFileHandler, err := os.Open(mdFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer mdFile.Close()
+	defer mdFileHandler.Close()
 
-	mdTmpFile, err := os.Create("/tmp/" + tmpFileName)
+	mdTmpFile, err := os.Create(tmpFile)
 	if err != nil {
 		log.Println(err)
 	}
 	defer mdTmpFile.Close()
 
-	fmt.Println(tmpFileName)
+	headerSection := regexp.MustCompile(`^(#{1,6})\s*(.*)$`)
 
-	scanner := bufio.NewScanner(mdFile)
+	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
 		matches := headerSection.FindStringSubmatch(scanner.Text())
 		currentHeaderType := len(matches[1])
@@ -62,6 +66,12 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	err = os.Rename(tmpFile, mdFile)
+        if err != nil {
+            log.Fatal(err)
+        }
+
 }
 
 func AddSectionChunk(s *string, hc int, cht int, ht int) {
@@ -70,13 +80,3 @@ func AddSectionChunk(s *string, hc int, cht int, ht int) {
 	}
 }
 
-func RandomString(n int) string {
-        rand.Seed(time.Now().UnixNano())
-	var chars = []rune("abcde__fghijklmno_pqrstuvwxyzABC____DEFGHIJKLM___NOPQRSTUVWXYZ0123456789")
-	s := make([]rune, n)
-	for i := range s {
-		s[i] = chars[rand.Intn(len(chars))]
-	}
-
-	return string(s)
-}
