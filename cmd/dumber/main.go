@@ -5,27 +5,26 @@ import (
 	"io"
 	"log"
 	"os"
-        "path"
-        "path/filepath"
+	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 func main() {
 
-	var sectionString string
+	var section string
 
 	var headerCounters [7]int
 
-        mdFile,err := filepath.Abs(os.Args[1])
+	mdFile, err := filepath.Abs(os.Args[1])
 	if err != nil {
 		log.Println(err)
 	}
 
-        mdFileDir := path.Dir(mdFile)
+	mdFileDir := path.Dir(mdFile)
 
-        tmpFile := mdFileDir + "/." + os.Args[1] + ".tmp"
+	tmpFile := mdFileDir + "/." + os.Args[1] + ".tmp"
 
 	mdFileHandler, err := os.Open(mdFile)
 	if err != nil {
@@ -39,24 +38,26 @@ func main() {
 	}
 	defer mdTmpFile.Close()
 
-	headerSection := regexp.MustCompile(`^(#{1,6})\s*(.*)$`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s*([\d\.]*)\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
-		matches := headerSection.FindStringSubmatch(scanner.Text())
+		matches := headerLine.FindStringSubmatch(scanner.Text())
+		header := matches[1]
 		currentHeaderType := len(matches[1])
+		title := matches[3]
 		headerCounters[currentHeaderType]++
 
 		for headerType := 1; headerType <= 6; headerType++ {
-			AddSectionChunk(&sectionString, headerCounters[headerType], currentHeaderType, headerType)
+			AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
 		}
 
-		_, err := io.WriteString(mdTmpFile, matches[1]+" "+strings.TrimRight(sectionString, ".")+" "+matches[2]+"\n")
+		_, err := io.WriteString(mdTmpFile, header+" "+section+" "+title+"\n")
 		if err != nil {
 			panic(err)
 		}
 
-		sectionString = ""
+		section = ""
 
 		for i := currentHeaderType + 1; i <= 6; i++ {
 			headerCounters[i] = 0
@@ -68,9 +69,9 @@ func main() {
 	}
 
 	err = os.Rename(tmpFile, mdFile)
-        if err != nil {
-            log.Fatal(err)
-        }
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
@@ -79,4 +80,3 @@ func AddSectionChunk(s *string, hc int, cht int, ht int) {
 		*s += strconv.Itoa(hc) + "."
 	}
 }
-
