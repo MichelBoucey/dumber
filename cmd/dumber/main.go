@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -17,22 +16,20 @@ func main() {
 
 	var headerCounters [7]int
 
-	mdFile, err := filepath.Abs(os.Args[1])
+	mdFilePath, err := filepath.Abs(os.Args[1])
 	if err != nil {
 		log.Println(err)
 	}
 
-	mdFileDir := path.Dir(mdFile)
+	tmpFilePath := filepath.Dir(mdFilePath) + "/." + filepath.Base(mdFilePath) + ".tmp"
 
-	tmpFile := mdFileDir + "/." + os.Args[1] + ".tmp"
-
-	mdFileHandler, err := os.Open(mdFile)
+	mdFileHandler, err := os.Open(mdFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer mdFileHandler.Close()
 
-	mdTmpFile, err := os.Create(tmpFile)
+	mdTmpFile, err := os.Create(tmpFilePath)
 	if err != nil {
 		log.Println(err)
 	}
@@ -77,7 +74,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = os.Rename(tmpFile, mdFile)
+	err = os.Rename(tmpFilePath, mdFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
