@@ -18,11 +18,12 @@ func main() {
 
 	var section string
 	var headerCounters [7]int
+	var rewrittenLine string
 
 	versionFlag := flag.Bool("v", false, "Show version")
 	helpFlag := flag.Bool("h", false, "Show help")
-	writeFlag := flag.Bool("w", false, "Rewrite the md file (default to stdout)")
-	// removeFlag := flag.Bool("r", false, "Remove sections numbers in the md file")
+	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
+	removeFlag := flag.Bool("r", false, "Remove section numbers from the .md file")
 
 	flag.Parse()
 
@@ -37,13 +38,13 @@ func main() {
 	}
 
 	if *helpFlag {
-		fmt.Println("Usage: dumber [-w|-r] file.md\n")
+		fmt.Println("Usage: dumber [OPTION] FILE\n")
 		flag.PrintDefaults()
 		fmt.Println("")
 		os.Exit(-1)
 	}
 
-	mdFilePath, err := filepath.Abs(os.Args[1])
+	mdFilePath, err := filepath.Abs(flag.Arg(0))
 	if err != nil {
 		log.Println(err)
 	}
@@ -66,10 +67,12 @@ func main() {
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
+
 		line := scanner.Text()
 		matches := headerLine.FindStringSubmatch(line)
 
 		if len(matches) == 4 {
+
 			header := matches[1]
 			currentHeaderType := len(matches[1])
 			title := matches[3]
@@ -79,14 +82,20 @@ func main() {
 				AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
 			}
 
+			if *removeFlag {
+				rewrittenLine = header + " " + title
+			} else {
+				rewrittenLine = header + " " + section + " " + title
+			}
+
 			if *writeFlag {
-				_, err := io.WriteString(mdTmpFile, header+" "+section+" "+title+"\n")
+				_, err := io.WriteString(mdTmpFile, rewrittenLine+"\n")
 				if err != nil {
 					panic(err)
 				}
 			} else {
 
-				fmt.Println(header + " " + section + " " + title)
+				fmt.Println(rewrittenLine)
 
 			}
 
@@ -95,7 +104,9 @@ func main() {
 			for i := currentHeaderType + 1; i <= 6; i++ {
 				headerCounters[i] = 0
 			}
+
 		} else {
+
 			if *writeFlag {
 				_, err := io.WriteString(mdTmpFile, line+"\n")
 				if err != nil {
@@ -105,6 +116,7 @@ func main() {
 				fmt.Println(line)
 
 			}
+
 		}
 	}
 	if err := scanner.Err(); err != nil {
