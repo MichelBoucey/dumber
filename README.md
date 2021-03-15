@@ -1,8 +1,10 @@
 # dumber
 
-dumber, a command line tool for d(igital) (n)umber(ing) MarkDown document sections.
+`dumber`, a command line tool for d(igital) (n)umber(ing) MarkDown document sections.
 
 With `dumber` (you use already `git`, don't you?) you can add or remove section numbers to header sections of your Mardown file.
+
+## Usage
 
 ```
 Usage: dumber [OPTION] FILE
@@ -11,5 +13,13 @@ Usage: dumber [OPTION] FILE
   -r    Remove section numbers from the .md file
   -v    Show version
   -w    Write section numbers to the .md file (default to stdout)
+```
+
+## Installation
+
+To install `dumber` from Github:
+
+```
+user@box ~ $ go get github.com/MichelBoucey/dumber/cmd/dumber
 ```
 
