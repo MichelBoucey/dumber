@@ -33,7 +33,7 @@ func main() {
 	}
 
 	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false {
-		fmt.Println("See -h for help)")
+		fmt.Println("See -h for help")
 		os.Exit(-1)
 	}
 
