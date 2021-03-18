@@ -9,16 +9,30 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 )
 
 func main() {
 
-	version := "1.0.0"
+	version := "1.1.0"
 
 	var section string
 	var headerCounters [7]int
 	var rewrittenLine string
+	var tmpFilePath string
+	var mdTmpFile *os.File
+	var pathSep string
+	var newLine string
+
+	switch runtime.GOOS {
+	case "windows":
+		pathSep = "\\"
+		newLine = "\r\n"
+	default:
+		pathSep = "/"
+		newLine = "\n"
+	}
 
 	versionFlag := flag.Bool("v", false, "Show version")
 	helpFlag := flag.Bool("h", false, "Show help")
@@ -28,7 +42,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag == true {
-		fmt.Println("dumber v" + version + "\nCopyright © 2021 Michel Boucey\nReleased under 3-Clause BSD License")
+		fmt.Println("dumber v" + version + newLine + "Copyright © 2021 Michel Boucey" + newLine + "Released under 3-Clause BSD License")
 		os.Exit(-1)
 	}
 
@@ -38,7 +52,7 @@ func main() {
 	}
 
 	if *helpFlag {
-		fmt.Println("Usage: dumber [OPTION] FILE\n")
+		fmt.Println("Usage: dumber [OPTION] FILE" + newLine)
 		flag.PrintDefaults()
 		fmt.Println("")
 		os.Exit(-1)
@@ -49,19 +63,18 @@ func main() {
 		log.Println(err)
 	}
 
-	tmpFilePath := filepath.Dir(mdFilePath) + "/." + filepath.Base(mdFilePath) + ".tmp"
-
 	mdFileHandler, err := os.Open(mdFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer mdFileHandler.Close()
 
-	mdTmpFile, err := os.Create(tmpFilePath)
-	if err != nil {
-		log.Println(err)
+	if *writeFlag {
+		tmpFilePath = filepath.Dir(mdFilePath) + pathSep + "." + filepath.Base(mdFilePath) + ".tmp"
+		mdTmpFile, err = os.Create(tmpFilePath)
+		if err != nil {
+			log.Println(err)
+		}
 	}
-	defer mdTmpFile.Close()
 
 	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 
@@ -89,14 +102,12 @@ func main() {
 			}
 
 			if *writeFlag {
-				_, err := io.WriteString(mdTmpFile, rewrittenLine+"\n")
+				_, err := io.WriteString(mdTmpFile, rewrittenLine+newLine)
 				if err != nil {
 					panic(err)
 				}
 			} else {
-
 				fmt.Println(rewrittenLine)
-
 			}
 
 			section = ""
@@ -108,13 +119,12 @@ func main() {
 		} else {
 
 			if *writeFlag {
-				_, err := io.WriteString(mdTmpFile, line+"\n")
+				_, err := io.WriteString(mdTmpFile, line+newLine)
 				if err != nil {
 					panic(err)
 				}
 			} else {
 				fmt.Println(line)
-
 			}
 
 		}
@@ -123,7 +133,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	mdFileHandler.Close()
+
 	if *writeFlag {
+		mdTmpFile.Close()
+
 		err = os.Rename(tmpFilePath, mdFilePath)
 		if err != nil {
 			log.Fatal(err)
