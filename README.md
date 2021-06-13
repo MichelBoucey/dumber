@@ -2,7 +2,7 @@
 
 `dumber`, a command line tool for **d**(igital n)**umber**(ing) Markdown document sections.
 
-With `dumber` (you already use `git`, don't you?) you can add or remove section numbers to header sections of your Mardown files.
+With `dumber` (you already use `git`, don't you?) you can add or remove section numbers to header sections of your Mardown files  (works on hash sign only).
 
 ## Usage
 
