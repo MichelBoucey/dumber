@@ -23,3 +23,4 @@ Install `dumber` from Github:
 user@box ~ $ go get github.com/MichelBoucey/dumber/cmd/dumber
 ```
 
+Thanks to `Star` this project!
