@@ -12,8 +12,8 @@
 //    3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived
 //       from this software without specific prior written permission.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+// TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
 // CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 // PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 // LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
@@ -36,7 +36,7 @@ import (
 
 func main() {
 
-	version := "1.1.1"
+	version := "1.1.2"
 
 	var headerCounters [7]int
 	var mdTmpFile *os.File
@@ -120,33 +120,20 @@ func main() {
 				rewrittenLine = header + " " + section + " " + title
 			}
 
-			if *writeFlag {
-				_, err := io.WriteString(mdTmpFile, rewrittenLine+newLine)
-				if err != nil {
-					panic(err)
-				}
-			} else {
-				fmt.Println(rewrittenLine)
-			}
-
-			section = ""
+			WriteTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
 
 			for i := currentHeaderType + 1; i <= 6; i++ {
 				headerCounters[i] = 0
 			}
 
+			section = ""
+
 		} else {
 
-			if *writeFlag {
-				_, err := io.WriteString(mdTmpFile, line+newLine)
-				if err != nil {
-					panic(err)
-				}
-			} else {
-				fmt.Println(line)
-			}
+			WriteTmpFile(*writeFlag, mdTmpFile, line, newLine)
 
 		}
+
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
@@ -161,6 +148,17 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+}
+
+func WriteTmpFile(wf bool, tf *os.File, l string, nl string) {
+	if wf {
+		_, e := io.WriteString(tf, l+nl)
+		if e != nil {
+			panic(e)
+		}
+	} else {
+		fmt.Println(l)
 	}
 }
 
