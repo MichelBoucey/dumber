@@ -152,7 +152,6 @@ func main() {
 }
 
 func WriteTmpFile(wf bool, tf *os.File, l string, nl string) {
-
 	if wf {
 		_, e := io.WriteString(tf, l+nl)
 		if e != nil {
@@ -161,13 +160,10 @@ func WriteTmpFile(wf bool, tf *os.File, l string, nl string) {
 	} else {
 		fmt.Println(l)
 	}
-
 }
 
 func AddSectionChunk(s *string, hc int, cht int, ht int) {
-
 	if hc > 0 && cht >= ht {
 		*s += strconv.Itoa(hc) + "."
 	}
-
 }
