@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+
+function filesum () {
+
+  echo $(md5sum ${1} | grep -oP "^.{32}")
+
+}
+
+
+RIGHT_ORIGINAL_FILE_CHECKSUM=$(filesum "test/file.md")
+RIGHT_MODIFIED_FILE_CHECKSUM=94659819fd831bccf87b438bf3e4c035
+
+
+# Numbering Markdown sections test
+${HOME}/go/bin/dumber test/file.md > test/sections-numbered.md
+
+MODIFIED_FILE_CHECKSUM=$(filesum "test/sections-numbered.md")
+
+if  [ "$MODIFIED_FILE_CHECKSUM" == "$RIGHT_MODIFIED_FILE_CHECKSUM" ]; then
+    echo "Test 1. Numbering Markdown sections : OK"
+else
+    echo "Test 1. Numbering Markdown sections : KO"
+fi
+
+
+# Unnumbering Markdown sections test
+${HOME}/go/bin/dumber -r test/sections-numbered.md > test/unnumbered-sections.md
+
+
+# Some clean up...
+rm -f test/{sections-numbered.md,unnumbered-sections.md}
+
