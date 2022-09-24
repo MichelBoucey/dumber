@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+
+function filesum () {
+
+    echo $(md5sum ${1} | grep -oP "^.{32}")
+
+}
+
+DUMBER=${HOME}/go/bin/dumber
+RIGHT_NUMBERED_SECTIONS_CHECKSUM=a60c33256a196cf50bc7b9b5f1d5927c
+
+
+# Numbering Markdown sections test
+${DUMBER} test/test.md > test/numbered-sections.md
+
+echo -n "- Numbering Markdown sections   -> "
+
+if  [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+
+# Unnumbering Markdown sections test
+${DUMBER} -r test/numbered-sections.md > test/unnumbered-sections.md
+
+echo -n "- Unnumbering Markdown sections -> "
+
+if  [ "$(filesum "test/unnumbered-sections.md")" == "$(filesum "test/test.md")" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+
