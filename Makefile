@@ -1,18 +1,21 @@
 
+BUILD_COMMAND=go build -o dumber cmd/dumber/main.go
+
 help:
 	@echo "Usage:"
 	@echo ""
-	@echo "    make [build|watch]"
+	@echo "    make [build|test|watch]"
 	@echo ""
 
 build:
-	go build -o dumber cmd/dumber/main.go
+	${BUILD_COMMAND}
+	mv dumber ${HOME}/go/bin/dumber
 
 watch:
 	@which CompileDaemon > /dev/null 2>&1 || (echo "CompileDaemon is required to watch (https://github.com/githubnemo/CompileDaemon)."; exit 1)
-	CompileDaemon -build "go build -o dumber cmd/dumber/main.go" -command "mv dumber ${HOME}/go/bin/dumber"
+	CompileDaemon -build "${BUILD_COMMAND}" -command "mv dumber ${HOME}/go/bin/dumber"
 
 .PHONY: test
-test:
-	@test/go
+test: build
+	test/run
 
