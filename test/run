@@ -6,14 +6,14 @@ function filesum () {
 
 }
 
-RIGHT_ORIGINAL_FILE_CHECKSUM=453e010e5b7f8ace032a4c364cdc6a95
+DUMBER=${HOME}/go/bin/dumber
 RIGHT_NUMBERED_SECTIONS_CHECKSUM=94659819fd831bccf87b438bf3e4c035
 
 
 # Numbering Markdown sections test
-${HOME}/go/bin/dumber test/file.md > test/numbered-sections.md
+${DUMBER} test/test.md > test/numbered-sections.md
 
-echo -n "Numbering Markdown sections -> "
+echo -n "- Numbering Markdown sections   -> "
 
 if  [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
     echo "OK"
@@ -23,17 +23,13 @@ fi
 
 
 # Unnumbering Markdown sections test
-${HOME}/go/bin/dumber -r test/numbered-sections.md > test/unnumbered-sections.md
+${DUMBER} -r test/numbered-sections.md > test/unnumbered-sections.md
 
-echo -n "Unnumbering Markdown sections -> "
+echo -n "- Unnumbering Markdown sections -> "
 
-if  [ "$(filesum "test/unnumbered-sections.md")" == "$RIGHT_ORIGINAL_FILE_CHECKSUM" ]; then
+if  [ "$(filesum "test/unnumbered-sections.md")" == "$(filesum "test/test.md")" ]; then
     echo "OK"
 else
     echo "KO"
 fi
-
-
-# Some clean up...
-rm -f test/*-sections.md
 
