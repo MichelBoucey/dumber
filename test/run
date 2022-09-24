@@ -7,7 +7,7 @@ function filesum () {
 }
 
 DUMBER=${HOME}/go/bin/dumber
-RIGHT_NUMBERED_SECTIONS_CHECKSUM=94659819fd831bccf87b438bf3e4c035
+RIGHT_NUMBERED_SECTIONS_CHECKSUM=a60c33256a196cf50bc7b9b5f1d5927c
 
 
 # Numbering Markdown sections test
