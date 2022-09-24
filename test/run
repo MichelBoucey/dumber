@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 function filesum () {
 
   echo $(md5sum ${1} | grep -oP "^.{32}")
@@ -32,4 +33,5 @@ if  [ "$(filesum "test/unnumbered-sections.md")" == "$(filesum "test/test.md")" 
 else
     echo "KO"
 fi
+
 
