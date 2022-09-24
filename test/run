@@ -3,7 +3,7 @@
 
 function filesum () {
 
-  echo $(md5sum ${1} | grep -oP "^.{32}")
+    echo $(md5sum ${1} | grep -oP "^.{32}")
 
 }
 
