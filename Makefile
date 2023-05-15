@@ -1,5 +1,5 @@
 
-BUILD=go build -o dumber cmd/dumber/main.go
+BUILD=go build -o dumber
 MV=mv dumber ${HOME}/go/bin/dumber
 
 help:
