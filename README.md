@@ -20,7 +20,7 @@ Usage: dumber [OPTION] FILE
 Install `dumber` from Github:
 
 ```
-user@box ~ $ go install github.com/MichelBoucey/dumber@latest
+go install github.com/MichelBoucey/dumber@latest
 ```
 
 ## 3. Thanks to `Star` this project!
