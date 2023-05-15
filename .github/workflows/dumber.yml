@@ -6,10 +6,10 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.20
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.20
 
       - name: Check out source code
         uses: actions/checkout@v1
@@ -17,5 +17,5 @@ jobs:
       - name: Build
         env:
           GOPROXY: "https://proxy.golang.org"
-        run: go build -o dumber cmd/dumber/main.go
+        run: go build -o dumber
 
