@@ -1,3 +1,3 @@
-module github/MichelBoucey/dumber
+module github.com/MichelBoucey/dumber
 
 go 1.20
