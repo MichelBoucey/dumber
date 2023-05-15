@@ -4,7 +4,7 @@
 
 With `dumber` (you already use `git`, don't you?) you can *add* or *remove* section numbers to header sections of your Mardown files. Works on hash sign only.
 
-## Usage
+## 1. Usage
 
 ```
 Usage: dumber [OPTION] FILE
@@ -15,7 +15,7 @@ Usage: dumber [OPTION] FILE
   -w    Write section numbers to the .md file (default to stdout)
 ```
 
-## Installation
+## 2. Installation
 
 Install `dumber` from Github:
 
@@ -23,5 +23,5 @@ Install `dumber` from Github:
 user@box ~ $ go install github.com/MichelBoucey/dumber@latest
 ```
 
-## Thanks to `Star` this project!
+## 3. Thanks to `Star` this project!
 
