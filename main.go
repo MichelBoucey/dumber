@@ -38,7 +38,7 @@ import (
 
 func main() {
 
-	version := "1.1.3"
+	version := "1.1.4"
 
 	var headerCounters [7]int
 	var mdTmpFile *os.File
@@ -112,23 +112,30 @@ func main() {
 			title := matches[3]
 			headerCounters[currentHeaderType]++
 
-			for headerType := 1; headerType <= 6; headerType++ {
-				AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
-			}
-
 			if *removeFlag {
+
 				rewrittenLine = header + " " + title
+
 			} else {
+
+				for headerType := 1; headerType <= 6; headerType++ {
+					AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
+				}
+
 				rewrittenLine = header + " " + section + " " + title
 			}
 
 			WriteTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
 
-			for i := currentHeaderType + 1; i <= 6; i++ {
-				headerCounters[i] = 0
-			}
+			if !*removeFlag {
 
-			section = ""
+				for i := currentHeaderType + 1; i <= 6; i++ {
+					headerCounters[i] = 0
+				}
+
+				section = ""
+
+			}
 
 		} else {
 
