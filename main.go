@@ -1,7 +1,7 @@
 //
 // dumber, a command line tool for numbering and denumbering Mardown sections file
 //
-//      Copyright (c) 2021-2022 Michel Boucey
+//      Copyright (c) 2021-2023 Michel Boucey
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 //
