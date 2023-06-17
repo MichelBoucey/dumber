@@ -119,13 +119,13 @@ func main() {
 			} else {
 
 				for headerType := 1; headerType <= 6; headerType++ {
-					AddSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
+					addSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
 				}
 
 				rewrittenLine = header + " " + section + " " + title
 			}
 
-			WriteTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
+			writeTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
 
 			if !*removeFlag {
 
@@ -139,7 +139,7 @@ func main() {
 
 		} else {
 
-			WriteTmpFile(*writeFlag, mdTmpFile, line, newLine)
+			writeTmpFile(*writeFlag, mdTmpFile, line, newLine)
 
 		}
 
@@ -160,7 +160,7 @@ func main() {
 	}
 }
 
-func WriteTmpFile(wf bool, tf *os.File, l string, nl string) {
+func writeTmpFile(wf bool, tf *os.File, l string, nl string) {
 	if wf {
 		_, e := io.WriteString(tf, l+nl)
 		if e != nil {
@@ -171,7 +171,7 @@ func WriteTmpFile(wf bool, tf *os.File, l string, nl string) {
 	}
 }
 
-func AddSectionChunk(s *string, hc int, cht int, ht int) {
+func addSectionChunk(s *string, hc int, cht int, ht int) {
 	if hc > 0 && cht >= ht {
 		*s += strconv.Itoa(hc) + "."
 	}
