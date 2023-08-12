@@ -38,7 +38,7 @@ import (
 
 func main() {
 
-	version := "1.1.4"
+	version := "2.0.0"
 
 	var headerCounters [7]int
 	var mdTmpFile *os.File
@@ -46,6 +46,8 @@ func main() {
 	var pathSep string
 	var rewrittenLine string
 	var section string
+	var lines []string
+	var toc []string
 
 	switch runtime.GOOS {
 	case "windows":
@@ -58,6 +60,7 @@ func main() {
 
 	helpFlag := flag.Bool("h", false, "Show help")
 	removeFlag := flag.Bool("r", false, "Remove section numbers from the .md file")
+	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
 
@@ -90,13 +93,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *writeFlag {
-		mdTmpFile, err = os.CreateTemp(filepath.Dir(mdFilePath)+pathSep, ".dumber-*.tmp")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
 	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
@@ -119,13 +115,21 @@ func main() {
 			} else {
 
 				for headerType := 1; headerType <= 6; headerType++ {
+
 					addSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
+
 				}
 
 				rewrittenLine = header + " " + section + " " + title
 			}
 
-			writeTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
+			if *tocFlag {
+
+				toc = append(toc, rewrittenLine)
+
+			}
+
+			lines = append(lines, rewrittenLine)
 
 			if !*removeFlag {
 
@@ -139,8 +143,7 @@ func main() {
 
 		} else {
 
-			writeTmpFile(*writeFlag, mdTmpFile, line, newLine)
-
+			lines = append(lines, line)
 		}
 
 	}
@@ -151,23 +154,52 @@ func main() {
 	mdFileHandler.Close()
 
 	if *writeFlag {
+
+		mdTmpFile, err = os.CreateTemp(filepath.Dir(mdFilePath)+pathSep, ".dumber-*.tmp")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if *tocFlag {
+
+			for _, line := range toc {
+
+				_, _ = io.WriteString(mdTmpFile, line+newLine)
+
+			}
+
+		}
+
+		for _, line := range lines {
+
+			_, _ = io.WriteString(mdTmpFile, line+newLine)
+
+		}
+
 		mdTmpFile.Close()
 
 		err = os.Rename(mdTmpFile.Name(), mdFilePath)
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
-}
 
-func writeTmpFile(wf bool, tf *os.File, l string, nl string) {
-	if wf {
-		_, e := io.WriteString(tf, l+nl)
-		if e != nil {
-			panic(e)
-		}
 	} else {
-		fmt.Println(l)
+
+		if *tocFlag {
+
+			for _, line := range toc {
+
+				fmt.Println(line)
+
+			}
+
+		}
+
+		for _, line := range lines {
+
+			fmt.Println(line)
+
+		}
 	}
 }
 
