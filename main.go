@@ -164,17 +164,15 @@ func main() {
 
 		if *tocFlag {
 
-			_, _ = io.WriteString(mdTmpFile, "<!-- TOC --!>"+newLine)
+			_, _ = io.WriteString(mdTmpFile, "<!-- TOC -->"+newLine)
 
 			for _, line := range tocLines {
-
-                                // Count n # and replace them by n*2 spaces and a *
 
 				_, _ = io.WriteString(mdTmpFile, line+newLine)
 
 			}
 
-			_, _ = io.WriteString(mdTmpFile, "<!-- /TOC --!>"+newLine)
+			_, _ = io.WriteString(mdTmpFile, "<!-- /TOC -->"+newLine)
 		}
 
 		_, _ = io.WriteString(mdTmpFile, newLine)
@@ -196,17 +194,17 @@ func main() {
 
 		if *tocFlag {
 
-			fmt.Println("<!-- TOC --!>")
+			fmt.Println("<!-- TOC -->")
 
 			for _, line := range tocLines {
 
 		                matches := headerLine.FindStringSubmatch(line)
 
-				fmt.Println(strings.Repeat("  ",len(matches[1]))+"* "+matches[3])
+				fmt.Println(strings.Repeat("    ",len(matches[1])-1)+"+ "+matches[2]+" "+matches[3])
 
 			}
 
-			fmt.Println("<!-- /TOC --!>"+newLine)
+			fmt.Println("<!-- /TOC -->"+newLine)
 
 		}
 
