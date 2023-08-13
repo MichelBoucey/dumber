@@ -11,6 +11,7 @@ Usage: dumber [OPTION] FILE
 
   -h    Show help
   -r    Remove section numbers from the .md file
+  -t    Add a table of contents
   -v    Show version
   -w    Write section numbers to the .md file (default to stdout)
 ```
