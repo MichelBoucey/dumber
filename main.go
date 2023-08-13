@@ -34,6 +34,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+        "strings"
 )
 
 func main() {
@@ -43,11 +44,12 @@ func main() {
 	var headerCounters [7]int
 	var mdTmpFile *os.File
 	var newLine string
+	var mdLines []string
 	var pathSep string
 	var rewrittenLine string
 	var section string
-	var lines []string
-	var toc []string
+	// var tocLine bool
+	var tocLines []string
 
 	switch runtime.GOOS {
 	case "windows":
@@ -125,11 +127,11 @@ func main() {
 
 			if *tocFlag {
 
-				toc = append(toc, rewrittenLine)
+				tocLines = append(tocLines, rewrittenLine)
 
 			}
 
-			lines = append(lines, rewrittenLine)
+			mdLines = append(mdLines, rewrittenLine)
 
 			if !*removeFlag {
 
@@ -143,7 +145,7 @@ func main() {
 
 		} else {
 
-			lines = append(lines, line)
+			mdLines = append(mdLines, line)
 		}
 
 	}
@@ -162,15 +164,22 @@ func main() {
 
 		if *tocFlag {
 
-			for _, line := range toc {
+			_, _ = io.WriteString(mdTmpFile, "<!-- TOC --!>"+newLine)
+
+			for _, line := range tocLines {
+
+                                // Count n # and replace them by n*2 spaces and a *
 
 				_, _ = io.WriteString(mdTmpFile, line+newLine)
 
 			}
 
+			_, _ = io.WriteString(mdTmpFile, "<!-- /TOC --!>"+newLine)
 		}
 
-		for _, line := range lines {
+		_, _ = io.WriteString(mdTmpFile, newLine)
+
+		for _, line := range mdLines {
 
 			_, _ = io.WriteString(mdTmpFile, line+newLine)
 
@@ -187,15 +196,22 @@ func main() {
 
 		if *tocFlag {
 
-			for _, line := range toc {
+			fmt.Println("<!-- TOC --!>")
 
-				fmt.Println(line)
+			for _, line := range tocLines {
+
+		                matches := headerLine.FindStringSubmatch(line)
+
+				fmt.Println(strings.Repeat("  ",len(matches[1]))+"* "+matches[3])
 
 			}
 
+			fmt.Println("<!-- /TOC --!>"+newLine)
+
 		}
 
-		for _, line := range lines {
+
+		for _, line := range mdLines {
 
 			fmt.Println(line)
 
