@@ -34,7 +34,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
-        "strings"
+	"strings"
 )
 
 func main() {
@@ -168,7 +168,9 @@ func main() {
 
 			for _, line := range tocLines {
 
-				_, _ = io.WriteString(mdTmpFile, line+newLine)
+				matches := headerLine.FindStringSubmatch(line)
+
+				_, _ = io.WriteString(mdTmpFile, strings.Repeat("    ", len(matches[1])-1)+"- "+"["+matches[2]+"](#"+matches[2]+") "+matches[3]+newLine)
 
 			}
 
@@ -179,8 +181,17 @@ func main() {
 
 		for _, line := range mdLines {
 
-			_, _ = io.WriteString(mdTmpFile, line+newLine)
+			matches := headerLine.FindStringSubmatch(line)
 
+			if len(matches) == 4 && *tocFlag {
+
+				_, _ = io.WriteString(mdTmpFile, matches[1]+" ["+matches[2]+"](#){name="+matches[2]+"} "+matches[3]+newLine)
+
+			} else {
+
+				_, _ = io.WriteString(mdTmpFile, line+newLine)
+
+			}
 		}
 
 		mdTmpFile.Close()
@@ -198,20 +209,29 @@ func main() {
 
 			for _, line := range tocLines {
 
-		                matches := headerLine.FindStringSubmatch(line)
+				matches := headerLine.FindStringSubmatch(line)
 
-				fmt.Println(strings.Repeat("    ",len(matches[1])-1)+"+ "+matches[2]+" "+matches[3])
+				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- " + "[" + matches[2] + "](#" + matches[2] + ") " + matches[3])
 
 			}
 
-			fmt.Println("<!-- /TOC -->"+newLine)
+			fmt.Println("<!-- /TOC -->" + newLine)
 
 		}
 
-
 		for _, line := range mdLines {
 
-			fmt.Println(line)
+			matches := headerLine.FindStringSubmatch(line)
+
+			if len(matches) == 4 && *tocFlag {
+
+				fmt.Println(matches[1] + " [" + matches[2] + "](#){name=" + matches[2] + "} " + matches[3])
+
+			} else {
+
+				fmt.Println(line)
+
+			}
 
 		}
 	}
