@@ -96,6 +96,7 @@ func main() {
 	}
 
 	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
+	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#[\d\.]*\)`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
@@ -145,7 +146,12 @@ func main() {
 
 		} else {
 
-			mdLines = append(mdLines, line)
+			if !tocLine.Match([]byte(line)) {
+
+				mdLines = append(mdLines, line)
+
+			}
+
 		}
 
 	}
@@ -164,8 +170,6 @@ func main() {
 
 		if *tocFlag {
 
-			_, _ = io.WriteString(mdTmpFile, "<!-- TOC -->"+newLine)
-
 			for _, line := range tocLines {
 
 				matches := headerLine.FindStringSubmatch(line)
@@ -174,7 +178,6 @@ func main() {
 
 			}
 
-			_, _ = io.WriteString(mdTmpFile, "<!-- /TOC -->"+newLine)
 		}
 
 		_, _ = io.WriteString(mdTmpFile, newLine)
@@ -205,8 +208,6 @@ func main() {
 
 		if *tocFlag {
 
-			fmt.Println("<!-- TOC -->")
-
 			for _, line := range tocLines {
 
 				matches := headerLine.FindStringSubmatch(line)
@@ -214,8 +215,6 @@ func main() {
 				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- " + "[" + matches[2] + "](#" + matches[2] + ") " + matches[3])
 
 			}
-
-			fmt.Println("<!-- /TOC -->" + newLine)
 
 		}
 
