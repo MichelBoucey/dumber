@@ -182,6 +182,7 @@ func main() {
 		for _, line := range mdLines {
 
 			_, _ = io.WriteString(mdTmpFile, line+newLine)
+
 		}
 
 		mdTmpFile.Close()
