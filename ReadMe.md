@@ -1,6 +1,6 @@
 <h1>Dumber</h1>
 
-`dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and table of contents.
+`dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and create a table of contents accordingly on demand.
 
 With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to your Mardown files:
 
