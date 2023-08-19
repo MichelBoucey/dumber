@@ -1,10 +1,10 @@
 <h1>Dumber</h1>
 
-`dumber`, a command line tool for **d**(igital n)**umber**(ing) Markdown document.
+`dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document.
 
 With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to your Mardown files:
 
-- section numbers to header sections. Works on hash sign only, so one can exclude HTLM section tags as `&lt;H1&gt;`.
+- section numbers to header sections. Works on hash sign only, so one can exclude HTLM section tags as &lt;H1&gt;.
 - a table of contents with links on entries.
 
 ## 2. Installation
