@@ -179,8 +179,6 @@ func main() {
 
 		}
 
-		_, _ = io.WriteString(mdTmpFile, newLine)
-
 		for _, line := range mdLines {
 
 			matches := headerLine.FindStringSubmatch(line)
