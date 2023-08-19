@@ -94,8 +94,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#[\d\.]*\)`)
-	headerLine := regexp.MustCompile(`^(#{1,6})\s+\[?([\d\.]*)(?:\]\(#[\d\.]*\))?\s*(.*)$`)
+	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#\d*`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
@@ -173,7 +173,7 @@ func main() {
 
 				matches := headerLine.FindStringSubmatch(line)
 
-				_, _ = io.WriteString(mdTmpFile, strings.Repeat("    ", len(matches[1])-1)+"- "+"["+matches[2]+"](#"+matches[2]+") "+matches[3]+newLine)
+				_, _ = io.WriteString(mdTmpFile, strings.Repeat("    ", len(matches[1])-1)+"- ["+matches[2]+"](#"+strings.ToLower(strings.ReplaceAll(matches[2], ".", "")+"-"+strings.ReplaceAll(matches[3], " ", "-"))+") "+matches[3]+newLine)
 
 			}
 
@@ -181,17 +181,7 @@ func main() {
 
 		for _, line := range mdLines {
 
-			matches := headerLine.FindStringSubmatch(line)
-
-			if len(matches) == 4 && *tocFlag {
-
-				_, _ = io.WriteString(mdTmpFile, matches[1]+" ["+matches[2]+"](#"+matches[2]+") "+matches[3]+newLine)
-
-			} else {
-
-				_, _ = io.WriteString(mdTmpFile, line+newLine)
-
-			}
+			_, _ = io.WriteString(mdTmpFile, line+newLine)
 		}
 
 		mdTmpFile.Close()
@@ -209,7 +199,7 @@ func main() {
 
 				matches := headerLine.FindStringSubmatch(line)
 
-				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- " + "[" + matches[2] + "](#" + matches[2] + ") " + matches[3])
+				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- [" + matches[2] + "](#" + strings.ToLower(strings.ReplaceAll(matches[2], ".", "")+"-"+strings.ReplaceAll(matches[3], " ", "-")) + ") " + matches[3])
 
 			}
 
@@ -217,17 +207,7 @@ func main() {
 
 		for _, line := range mdLines {
 
-			matches := headerLine.FindStringSubmatch(line)
-
-			if len(matches) == 4 && *tocFlag {
-
-				fmt.Println(matches[1] + " [" + matches[2] + "](#" + matches[2] + ") " + matches[3])
-
-			} else {
-
-				fmt.Println(line)
-
-			}
+			fmt.Println(line)
 
 		}
 	}
