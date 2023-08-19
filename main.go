@@ -48,7 +48,6 @@ func main() {
 	var pathSep string
 	var rewrittenLine string
 	var section string
-	// var tocLine bool
 	var tocLines []string
 
 	switch runtime.GOOS {
