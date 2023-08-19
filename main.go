@@ -62,7 +62,7 @@ func main() {
 
 	helpFlag := flag.Bool("h", false, "Show help")
 	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
-	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file (can not be combined with -r")
+	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file (can not be combined with -r)")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
 
