@@ -9,12 +9,14 @@ function filesum () {
 
 DUMBER=${HOME}/go/bin/dumber
 RIGHT_NUMBERED_SECTIONS_CHECKSUM=a60c33256a196cf50bc7b9b5f1d5927c
+RIGHT_NUMBERED_SECTIONS_WITH_TOC_CHECKSUM=d57e4074cebb9148ab8ff96b1e47a6fe
 
+echo
 
 # Numbering Markdown sections test
 ${DUMBER} test/test.md > test/numbered-sections.md
 
-echo -n "- Numbering Markdown sections   -> "
+echo -n "- Numbering Markdown sections                    -> "
 
 if  [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
     echo "OK"
@@ -26,7 +28,7 @@ fi
 # Unnumbering Markdown sections test
 ${DUMBER} -r test/numbered-sections.md > test/unnumbered-sections.md
 
-echo -n "- Unnumbering Markdown sections -> "
+echo -n "- Unnumbering Markdown sections                  -> "
 
 if  [ "$(filesum "test/unnumbered-sections.md")" == "$(filesum "test/test.md")" ]; then
     echo "OK"
@@ -34,4 +36,25 @@ else
     echo "KO"
 fi
 
+# Numbering Markdown sections with toc test
+${DUMBER} -t test/test.md > test/numbered-sections-with-toc.md
+
+echo -n "- Numbering Markdown sections and adding toc     -> "
+
+if  [ "$(filesum "test/numbered-sections-with-toc.md")" == "$RIGHT_NUMBERED_SECTIONS_WITH_TOC_CHECKSUM" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+# Unnumbering Markdown sections and removing toc test
+${DUMBER} -r test/numbered-sections-with-toc.md > test/unnumbered-sections-removed-toc.md
+
+echo -n "- Unnumbering Markdown sections and removing toc -> "
+
+if  [ "$(filesum "test/unnumbered-sections-removed-toc.md")" == "$(filesum "test/test.md")" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
 

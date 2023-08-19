@@ -15,7 +15,7 @@ build:
 	@echo && dumber -v || echo
 
 clean:
-	rm -f test/*-sections.md
+	rm -f test/*numbered-sections*
 
 distclean: clean
 	rm -f ${HOME}/go/bin/dumber

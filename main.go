@@ -34,18 +34,21 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 func main() {
 
-	version := "1.1.4"
+	version := "2.0.0"
 
 	var headerCounters [7]int
 	var mdTmpFile *os.File
 	var newLine string
+	var mdLines []string
 	var pathSep string
 	var rewrittenLine string
 	var section string
+	var tocLines []string
 
 	switch runtime.GOOS {
 	case "windows":
@@ -57,7 +60,8 @@ func main() {
 	}
 
 	helpFlag := flag.Bool("h", false, "Show help")
-	removeFlag := flag.Bool("r", false, "Remove section numbers from the .md file")
+	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
+	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file (can not be combined with -r)")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
 
@@ -68,7 +72,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false {
+	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false || *removeFlag == true && *tocFlag == true {
 		fmt.Println("See -h for help")
 		os.Exit(-1)
 	}
@@ -90,14 +94,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *writeFlag {
-		mdTmpFile, err = os.CreateTemp(filepath.Dir(mdFilePath)+pathSep, ".dumber-*.tmp")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
+	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#[\d\.]*\)`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s+\[?([\d\.]*)(?:\]\(#\)\{name=[\d\.]*\})?\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
@@ -119,13 +117,21 @@ func main() {
 			} else {
 
 				for headerType := 1; headerType <= 6; headerType++ {
+
 					addSectionChunk(&section, headerCounters[headerType], currentHeaderType, headerType)
+
 				}
 
 				rewrittenLine = header + " " + section + " " + title
 			}
 
-			writeTmpFile(*writeFlag, mdTmpFile, rewrittenLine, newLine)
+			if *tocFlag {
+
+				tocLines = append(tocLines, rewrittenLine)
+
+			}
+
+			mdLines = append(mdLines, rewrittenLine)
 
 			if !*removeFlag {
 
@@ -139,7 +145,11 @@ func main() {
 
 		} else {
 
-			writeTmpFile(*writeFlag, mdTmpFile, line, newLine)
+			if !tocLine.Match([]byte(line)) {
+
+				mdLines = append(mdLines, line)
+
+			}
 
 		}
 
@@ -151,23 +161,75 @@ func main() {
 	mdFileHandler.Close()
 
 	if *writeFlag {
+
+		mdTmpFile, err = os.CreateTemp(filepath.Dir(mdFilePath)+pathSep, ".dumber-*.tmp")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if *tocFlag {
+
+			for _, line := range tocLines {
+
+				matches := headerLine.FindStringSubmatch(line)
+
+				_, _ = io.WriteString(mdTmpFile, strings.Repeat("    ", len(matches[1])-1)+"- "+"["+matches[2]+"](#"+matches[2]+") "+matches[3]+newLine)
+
+			}
+
+		}
+
+		for _, line := range mdLines {
+
+			matches := headerLine.FindStringSubmatch(line)
+
+			if len(matches) == 4 && *tocFlag {
+
+				_, _ = io.WriteString(mdTmpFile, matches[1]+" ["+matches[2]+"](#){name="+matches[2]+"} "+matches[3]+newLine)
+
+			} else {
+
+				_, _ = io.WriteString(mdTmpFile, line+newLine)
+
+			}
+		}
+
 		mdTmpFile.Close()
 
 		err = os.Rename(mdTmpFile.Name(), mdFilePath)
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
-}
 
-func writeTmpFile(wf bool, tf *os.File, l string, nl string) {
-	if wf {
-		_, e := io.WriteString(tf, l+nl)
-		if e != nil {
-			panic(e)
-		}
 	} else {
-		fmt.Println(l)
+
+		if *tocFlag {
+
+			for _, line := range tocLines {
+
+				matches := headerLine.FindStringSubmatch(line)
+
+				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- " + "[" + matches[2] + "](#" + matches[2] + ") " + matches[3])
+
+			}
+
+		}
+
+		for _, line := range mdLines {
+
+			matches := headerLine.FindStringSubmatch(line)
+
+			if len(matches) == 4 && *tocFlag {
+
+				fmt.Println(matches[1] + " [" + matches[2] + "](#){name=" + matches[2] + "} " + matches[3])
+
+			} else {
+
+				fmt.Println(line)
+
+			}
+
+		}
 	}
 }
 
