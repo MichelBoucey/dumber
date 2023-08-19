@@ -95,7 +95,7 @@ func main() {
 	}
 
 	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#[\d\.]*\)`)
-	headerLine := regexp.MustCompile(`^(#{1,6})\s+\[?([\d\.]*)(?:\]\(#\)\{name=[\d\.]*\})?\s*(.*)$`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s+\[?([\d\.]*)(?:\]\(#[\d\.]*\))?\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
@@ -185,7 +185,7 @@ func main() {
 
 			if len(matches) == 4 && *tocFlag {
 
-				_, _ = io.WriteString(mdTmpFile, matches[1]+" ["+matches[2]+"](#){name="+matches[2]+"} "+matches[3]+newLine)
+				_, _ = io.WriteString(mdTmpFile, matches[1]+" ["+matches[2]+"](#"+matches[2]+") "+matches[3]+newLine)
 
 			} else {
 
@@ -221,7 +221,7 @@ func main() {
 
 			if len(matches) == 4 && *tocFlag {
 
-				fmt.Println(matches[1] + " [" + matches[2] + "](#){name=" + matches[2] + "} " + matches[3])
+				fmt.Println(matches[1] + " [" + matches[2] + "](#" + matches[2] + ") " + matches[3])
 
 			} else {
 
