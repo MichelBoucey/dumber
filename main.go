@@ -61,8 +61,8 @@ func main() {
 	}
 
 	helpFlag := flag.Bool("h", false, "Show help")
-	removeFlag := flag.Bool("r", false, "Remove section numbers from the .md file")
-	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file")
+	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
+	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file (can not be combined with -r")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
 
@@ -73,7 +73,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false {
+	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false || *removeFlag == true && *tocFlag == true {
 		fmt.Println("See -h for help")
 		os.Exit(-1)
 	}
@@ -95,8 +95,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#[\d\.]*\)`)
+	headerLine := regexp.MustCompile(`^(#{1,6})\s+\[?([\d\.]*)(?:\]\(#\)\{name=[\d\.]*\})?\s*(.*)$`)
 
 	scanner := bufio.NewScanner(mdFileHandler)
 	for scanner.Scan() {
