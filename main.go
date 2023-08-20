@@ -208,8 +208,8 @@ func main() {
 }
 
 func toToCEntry(r *regexp.Regexp, l string) string {
-	ms := r.FindStringSubmatch(l)
-	return (strings.Repeat("    ", len(ms[1])-1) + "- [" + ms[2] + "](#" + strings.ToLower(strings.ReplaceAll(ms[2], ".", "")+"-"+strings.ReplaceAll(ms[3], " ", "-")) + ") " + ms[3])
+	m := r.FindStringSubmatch(l)
+	return (strings.Repeat("    ", len(m[1])-1) + "- [" + m[2] + "](#" + strings.ToLower(strings.ReplaceAll(m[2], ".", "")+"-"+strings.ReplaceAll(m[3], " ", "-")) + ") " + m[3])
 }
 
 func addSectionChunk(s *string, hc int, cht int, ht int) {
