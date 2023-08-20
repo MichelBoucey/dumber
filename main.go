@@ -48,7 +48,7 @@ func main() {
 	var pathSep string
 	var rewrittenLine string
 	var section string
-	var tocLines []string
+	var headerLines []string
 
 	switch runtime.GOOS {
 	case "windows":
@@ -123,11 +123,12 @@ func main() {
 				}
 
 				rewrittenLine = header + " " + section + " " + title
+
 			}
 
 			if *tocFlag {
 
-				tocLines = append(tocLines, rewrittenLine)
+				headerLines = append(headerLines, rewrittenLine)
 
 			}
 
@@ -143,13 +144,9 @@ func main() {
 
 			}
 
-		} else {
+		} else if !tocLine.Match([]byte(line)) {
 
-			if !tocLine.Match([]byte(line)) {
-
-				mdLines = append(mdLines, line)
-
-			}
+			mdLines = append(mdLines, line)
 
 		}
 
@@ -169,11 +166,9 @@ func main() {
 
 		if *tocFlag {
 
-			for _, line := range tocLines {
+			for _, line := range headerLines {
 
-				matches := headerLine.FindStringSubmatch(line)
-
-				_, _ = io.WriteString(mdTmpFile, strings.Repeat("    ", len(matches[1])-1)+"- ["+matches[2]+"](#"+strings.ToLower(strings.ReplaceAll(matches[2], ".", "")+"-"+strings.ReplaceAll(matches[3], " ", "-"))+") "+matches[3]+newLine)
+				_, _ = io.WriteString(mdTmpFile, toToCEntry(headerLine, line)+newLine)
 
 			}
 
@@ -196,11 +191,9 @@ func main() {
 
 		if *tocFlag {
 
-			for _, line := range tocLines {
+			for _, line := range headerLines {
 
-				matches := headerLine.FindStringSubmatch(line)
-
-				fmt.Println(strings.Repeat("    ", len(matches[1])-1) + "- [" + matches[2] + "](#" + strings.ToLower(strings.ReplaceAll(matches[2], ".", "")+"-"+strings.ReplaceAll(matches[3], " ", "-")) + ") " + matches[3])
+				fmt.Println(toToCEntry(headerLine, line))
 
 			}
 
@@ -212,6 +205,11 @@ func main() {
 
 		}
 	}
+}
+
+func toToCEntry(r *regexp.Regexp, l string) string {
+	ms := r.FindStringSubmatch(l)
+	return (strings.Repeat("    ", len(ms[1])-1) + "- [" + ms[2] + "](#" + strings.ToLower(strings.ReplaceAll(ms[2], ".", "")+"-"+strings.ReplaceAll(ms[3], " ", "-")) + ") " + ms[3])
 }
 
 func addSectionChunk(s *string, hc int, cht int, ht int) {
