@@ -49,6 +49,7 @@ func main() {
 	var rewrittenLine string
 	var section string
 	var headerLines []string
+	var upperHeaderLevel int
 
 	switch runtime.GOOS {
 	case "windows":
@@ -157,6 +158,14 @@ func main() {
 
 	mdFileHandler.Close()
 
+	if *tocFlag {
+
+		firstHeaderLine := headerLine.FindStringSubmatch(headerLines[0])
+
+		upperHeaderLevel = len(firstHeaderLine[1])
+
+	}
+
 	if *writeFlag {
 
 		mdTmpFile, err = os.CreateTemp(filepath.Dir(mdFilePath)+pathSep, ".dumber-*.tmp")
@@ -168,7 +177,7 @@ func main() {
 
 			for _, line := range headerLines {
 
-				_, _ = io.WriteString(mdTmpFile, toToCEntry(headerLine, line)+newLine)
+				_, _ = io.WriteString(mdTmpFile, toToCEntry(upperHeaderLevel, headerLine, line)+newLine)
 
 			}
 
@@ -193,7 +202,7 @@ func main() {
 
 			for _, line := range headerLines {
 
-				fmt.Println(toToCEntry(headerLine, line))
+				fmt.Println(toToCEntry(upperHeaderLevel, headerLine, line))
 
 			}
 
@@ -207,9 +216,14 @@ func main() {
 	}
 }
 
-func toToCEntry(r *regexp.Regexp, l string) string {
+func toToCEntry(u int, r *regexp.Regexp, l string) string {
 	m := r.FindStringSubmatch(l)
-	return (strings.Repeat("    ", len(m[1])-1) + "- [" + m[2] + "](#" + strings.ToLower(strings.ReplaceAll(m[2], ".", "")+"-"+strings.ReplaceAll(m[3], " ", "-")) + ") " + m[3])
+	repeat := len(m[1]) - u
+	if repeat < 0 {
+		fmt.Println("Header level too low line : " + l)
+		os.Exit(-1)
+	}
+	return (strings.Repeat("    ", repeat) + "- [" + m[2] + "](#" + strings.ToLower(strings.ReplaceAll(m[2], ".", "")+"-"+strings.ReplaceAll(m[3], " ", "-")) + ") " + m[3])
 }
 
 func addSectionChunk(s *string, hc int, cht int, ht int) {
