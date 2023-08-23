@@ -39,7 +39,7 @@ import (
 
 func main() {
 
-	version := "2.0.0"
+	version := "2.0.1"
 
 	var headerCounters [7]int
 	var mdTmpFile *os.File
