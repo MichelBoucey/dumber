@@ -1,6 +1,7 @@
 
 BUILD=go build -o dumber
-MV=mv dumber ${HOME}/go/bin/dumber
+MV=mv dumber ~/go/bin/dumber
+VERSION=`grep -Po '\d*\.\d*\.\d*' main.go`
 
 help:
 	@echo "Usage:"
@@ -16,7 +17,7 @@ clean:
 	rm -f test/*numbered-sections*
 
 distclean: clean
-	rm -f dumber ${HOME}/go/bin/dumber
+	rm -f dumber ~/go/bin/dumber
 	
 install: build
 	${MV}
@@ -27,7 +28,7 @@ watch:
 	CompileDaemon -build "${BUILD}" -command "${MV}"
 
 .PHONY: test
-test: install
+test: clean install
 	test/run
 	@echo
 

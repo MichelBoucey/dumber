@@ -39,16 +39,17 @@ import (
 
 func main() {
 
-	version := "2.0.1"
+	version := "2.1.0"
 
 	var headerCounters [7]int
+	var headerLines []string
+	var isToCInsertionLine bool = false
+	var mdLines []string
 	var mdTmpFile *os.File
 	var newLine string
-	var mdLines []string
 	var pathSep string
 	var rewrittenLine string
 	var section string
-	var headerLines []string
 	var upperHeaderLevel int
 
 	switch runtime.GOOS {
@@ -62,7 +63,6 @@ func main() {
 
 	helpFlag := flag.Bool("h", false, "Show help")
 	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
-	tocFlag := flag.Bool("t", false, "Add a table of contents to the .md file (can not be combined with -r)")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
 
@@ -73,7 +73,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false || *removeFlag == true && *tocFlag == true {
+	if len(os.Args) == 1 || len(flag.Args()) == 0 && *helpFlag == false {
 		fmt.Println("See -h for help")
 		os.Exit(-1)
 	}
@@ -95,6 +95,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	tocInsertionLine := regexp.MustCompile(`^<!--\s+\bToC\b\s+-->\s*$`)
 	tocLine := regexp.MustCompile(`^\s*-\s\[[\d\.]*\]\(#\d*`)
 	headerLine := regexp.MustCompile(`^(#{1,6})\s+([\d\.]*)\s*(.*)$`)
 
@@ -125,27 +126,22 @@ func main() {
 
 				rewrittenLine = header + " " + section + " " + title
 
-			}
-
-			if *tocFlag {
-
-				headerLines = append(headerLines, rewrittenLine)
-
-			}
-
-			mdLines = append(mdLines, rewrittenLine)
-
-			if !*removeFlag {
-
 				for i := currentHeaderType + 1; i <= 6; i++ {
 					headerCounters[i] = 0
 				}
 
 				section = ""
 
+				headerLines = append(headerLines, rewrittenLine)
 			}
 
+			mdLines = append(mdLines, rewrittenLine)
+
 		} else if !tocLine.Match([]byte(line)) {
+
+			if tocInsertionLine.Match([]byte(line)) {
+				isToCInsertionLine = true
+			}
 
 			mdLines = append(mdLines, line)
 
@@ -158,7 +154,7 @@ func main() {
 
 	mdFileHandler.Close()
 
-	if *tocFlag {
+	if !*removeFlag && isToCInsertionLine {
 
 		firstHeaderLine := headerLine.FindStringSubmatch(headerLines[0])
 
@@ -173,19 +169,19 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if *tocFlag {
-
-			for _, line := range headerLines {
-
-				_, _ = io.WriteString(mdTmpFile, toToCEntry(upperHeaderLevel, headerLine, line)+newLine)
-
-			}
-
-		}
-
 		for _, line := range mdLines {
 
 			_, _ = io.WriteString(mdTmpFile, line+newLine)
+
+			if !*removeFlag && isToCInsertionLine && tocInsertionLine.Match([]byte(line)) {
+
+				for _, hline := range headerLines {
+
+					_, _ = io.WriteString(mdTmpFile, toToCEntry(upperHeaderLevel, headerLine, hline)+newLine)
+
+				}
+
+			}
 
 		}
 
@@ -198,19 +194,19 @@ func main() {
 
 	} else {
 
-		if *tocFlag {
-
-			for _, line := range headerLines {
-
-				fmt.Println(toToCEntry(upperHeaderLevel, headerLine, line))
-
-			}
-
-		}
-
 		for _, line := range mdLines {
 
 			fmt.Println(line)
+
+			if !*removeFlag && isToCInsertionLine && tocInsertionLine.Match([]byte(line)) {
+
+				for _, hline := range headerLines {
+
+					fmt.Println(toToCEntry(upperHeaderLevel, headerLine, hline))
+
+				}
+
+			}
 
 		}
 	}
@@ -218,12 +214,12 @@ func main() {
 
 func toToCEntry(u int, r *regexp.Regexp, l string) string {
 	m := r.FindStringSubmatch(l)
-	repeat := len(m[1]) - u
-	if repeat < 0 {
+	c := len(m[1]) - u
+	if c < 0 {
 		fmt.Println("Header level too low line : " + l)
 		os.Exit(-1)
 	}
-	return (strings.Repeat("    ", repeat) + "- [" + m[2] + "](#" + strings.ToLower(strings.ReplaceAll(m[2], ".", "")+"-"+strings.ReplaceAll(m[3], " ", "-")) + ") " + m[3])
+	return (strings.Repeat("    ", c) + "- [" + m[2] + "](#" + strings.ToLower(strings.ReplaceAll(m[2], ".", "")+"-"+strings.ReplaceAll(m[3], " ", "-")) + ") " + m[3])
 }
 
 func addSectionChunk(s *string, hc int, cht int, ht int) {
