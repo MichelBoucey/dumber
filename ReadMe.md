@@ -9,7 +9,7 @@ With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to y
 
 See an [example](./example.md).
 
-_N.B._ : The table of content generation is not tested and implemented for UTF8 yet.
+_N.B._ : The table of contents generation is not tested nor implemented for UTF8 yet.
 
 ## 1. Installation
 
