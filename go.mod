@@ -1,3 +1,3 @@
-module github.com/MichelBoucey/dumber/v2
+module github.com/MichelBoucey/dumber
 
-go 1.21.0
+go 1.22.0
