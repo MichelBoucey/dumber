@@ -1,7 +1,7 @@
 //
-// dumber, a command line tool for numbering and denumbering Mardown sections file
+// dumber, a command line tool for numbering or denumbering Mardown sections file and accordingly adding or removing Table(s) of Contents
 //
-//      Copyright (c) 2021-2023 Michel Boucey
+//      Copyright (c) 2021-2024 Michel Boucey
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 //
