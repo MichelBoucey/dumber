@@ -30,7 +30,7 @@ Usage: dumber [OPTION] FILE
   -w    Write section numbers to the .md file (default to stdout)
 ```
 
-### 2.2. Add table(s) of content
+### 2.2. Add table(s) of contents
 
 To add a table of contents you have to add a line with the HTML comment **&lt;!-- Toc --!&gt;**, where you want a table of contents to appear:
 
