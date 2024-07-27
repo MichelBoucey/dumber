@@ -1,7 +1,7 @@
 
-BUILD=go build -o dumber
-MV=mv dumber ~/go/bin/dumber
-VERSION=`grep -Po '\d*\.\d*\.\d*' main.go`
+COMMIT_SHORT_SHA := $(shell git rev-parse --short HEAD)
+BUILD=go build -o dumber -ldflags "-X 'main.commitShortHash=$(COMMIT_SHORT_SHA)'"
+MV=sudo mv dumber ~/go/bin/dumber
 
 help:
 	@echo "Usage:"
