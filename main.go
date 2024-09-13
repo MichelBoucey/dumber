@@ -43,8 +43,9 @@ var (
 
 func main() {
 
-	version := "2.1.0"
+	version := "3.0.0"
 
+        var firstH1Done bool = false
 	var headerCounters [7]int
 	var headerLines []string
 	var isToCInsertionLine bool = false
@@ -69,6 +70,7 @@ func main() {
 	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
+	noTitleSkipFlag := flag.Bool("t", false, "Do section numbering from the main document title (H1)")
 
 	flag.Parse()
 
@@ -114,7 +116,18 @@ func main() {
 			header := matches[1]
 			currentHeaderType := len(matches[1])
 			title := matches[3]
-			headerCounters[currentHeaderType]++
+
+			if firstH1Done || *noTitleSkipFlag {
+
+				headerCounters[currentHeaderType]++
+
+			}
+
+                        if !firstH1Done && currentHeaderType == 1 {
+
+                                firstH1Done = true
+
+                        }
 
 			if *removeFlag {
 
@@ -128,7 +141,13 @@ func main() {
 
 				}
 
-				rewrittenLine = header + " " + section + " " + title
+				if section != "" {
+					section += " "
+				}
+
+				rewrittenLine = header + " " + section + title
+
+				headerLines = append(headerLines, rewrittenLine)
 
 				for i := currentHeaderType + 1; i <= 6; i++ {
 					headerCounters[i] = 0
@@ -136,7 +155,6 @@ func main() {
 
 				section = ""
 
-				headerLines = append(headerLines, rewrittenLine)
 			}
 
 			mdLines = append(mdLines, rewrittenLine)
@@ -144,7 +162,9 @@ func main() {
 		} else if !tocLine.Match([]byte(line)) {
 
 			if tocInsertionLine.Match([]byte(line)) {
+
 				isToCInsertionLine = true
+
 			}
 
 			mdLines = append(mdLines, line)

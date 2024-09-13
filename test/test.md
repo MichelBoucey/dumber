@@ -1,4 +1,4 @@
-<H1>Lorem</H1>
+# Lorem
 
 # Lorem ipsum dolor
 
