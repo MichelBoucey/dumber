@@ -70,7 +70,7 @@ func main() {
 	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
 	versionFlag := flag.Bool("v", false, "Show version")
 	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
-	noTitleSkipFlag := flag.Bool("t", false, "Do section numbering from the main document title (H1)")
+	noTitleSkipFlag := flag.Bool("a", false, "Numbering all sections from the main document title (H1)")
 
 	flag.Parse()
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 function filesum () {
 
     echo $(md5sum ${1} | grep -oP "^.{32}")
@@ -8,29 +7,52 @@ function filesum () {
 }
 
 DUMBER=~/go/bin/dumber
+RIGHT_CHECKSUM=$(filesum "test/test.md")
 RIGHT_NUMBERED_SECTIONS_CHECKSUM=796eb0234b17da57d4424c3196c620a1
 RIGHT_NUMBERED_SECTIONS_AND_TOC_CHECKSUM=0503fcbd091e6fa626ff71f8d5f1ae7b
+RIGHT_ALL_NUMBERED_SECTIONS_CHECKSUM=b79bf385dc86654f952b0548da8d3f13
 
 echo
 
 # Numbering Markdown sections test
 ${DUMBER} test/test.md > test/numbered-sections.md
 
-echo -n "- Numbering Markdown sections                    -> "
+echo -n "- Numbering Markdown sections                               -> "
 
-if  [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
+if [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
     echo "OK"
 else
     echo "KO"
 fi
 
-
 # Unnumbering Markdown sections test
 ${DUMBER} -r test/numbered-sections.md > test/unnumbered-sections.md
 
-echo -n "- Unnumbering Markdown sections                  -> "
+echo -n "- Unnumbering Markdown sections                             -> "
 
-if  [ "$(filesum "test/unnumbered-sections.md")" == "$(filesum "test/test.md")" ]; then
+if [ "$(filesum "test/unnumbered-sections.md")" == "$RIGHT_CHECKSUM" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+# Numbering All Markdown sections test
+${DUMBER} -a test/test.md > test/all-numbered-sections.md
+
+echo -n "- Numbering All Markdown sections (with title section H1)   -> "
+
+if [ "$(filesum "test/all-numbered-sections.md")" == "$RIGHT_ALL_NUMBERED_SECTIONS_CHECKSUM" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+# Unnumbering All Markdown sections test
+${DUMBER} -r test/all-numbered-sections.md > test/all-unnumbered-sections.md
+
+echo -n "- Unnumbering All Markdown sections (with title section H1) -> "
+
+if [ "$(filesum "test/all-unnumbered-sections.md")" == "$RIGHT_CHECKSUM" ]; then
     echo "OK"
 else
     echo "KO"
@@ -39,21 +61,22 @@ fi
 # Numbering Markdown sections and adding a table of contents test
 ${DUMBER} test/test-toc.md > test/numbered-sections-and-toc.md
 
-echo -n "- Numbering Markdown sections and adding ToC     -> "
+echo -n "- Numbering Markdown sections and adding ToC                -> "
 
-if  [ "$(filesum "test/numbered-sections-and-toc.md")" == "$RIGHT_NUMBERED_SECTIONS_AND_TOC_CHECKSUM" ]; then
+if [ "$(filesum "test/numbered-sections-and-toc.md")" == "$RIGHT_NUMBERED_SECTIONS_AND_TOC_CHECKSUM" ]; then
     echo "OK"
 else
     echo "KO"
 fi
 
 # Unnumbering Markdown sections and removing a table of contents test
-${DUMBER} -r test/test-toc.md > test/unnumbered-sections-and-toc-removed.md
+${DUMBER} -r test/numbered-sections-and-toc.md > test/unnumbered-sections-and-toc-removed.md
 
-echo -n "- Unnumbering Markdown sections and removing ToC -> "
+echo -n "- Unnumbering Markdown sections and removing ToC            -> "
 
 if  [ "$(filesum "test/unnumbered-sections-and-toc-removed.md")" == "$(filesum "test/test-toc.md")" ]; then
     echo "OK"
 else
     echo "KO"
 fi
+

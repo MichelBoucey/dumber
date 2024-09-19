@@ -14,7 +14,7 @@ build:
 	${BUILD}
 
 clean:
-	rm -f test/*numbered-sections*
+	rm -f test/*sections*
 
 distclean: clean
 	rm -f dumber ~/go/bin/dumber
