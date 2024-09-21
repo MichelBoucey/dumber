@@ -1,7 +1,8 @@
 
 COMMIT_SHORT_SHA := $(shell git rev-parse --short HEAD)
 BUILD=go build -o dumber -ldflags "-X 'main.commitShortHash=$(COMMIT_SHORT_SHA)'"
-MV=sudo mv dumber ~/go/bin/dumber
+INSTALL_BIN_PATH=/usr/local/bin/dumber
+MV=mv dumber ${INSTALL_BIN_PATH}
 
 help:
 	@echo "Usage:"
@@ -17,7 +18,7 @@ clean:
 	rm -f test/*sections*
 
 distclean: clean
-	rm -f dumber ~/go/bin/dumber
+	rm -f ${INSTALL_BIN_PATH}
 	
 install: build
 	${MV}
