@@ -4,7 +4,7 @@
 
 With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to your Mardown files:
 
-- section numbers to header sections. This works on hash sign only. &lt;H1&gt;, (#) stay unnumbered as the main title.
+- section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title.
 - a table of contents with links on entries.
 
 See an [example](./example.md).
@@ -38,5 +38,5 @@ To add a table of contents you have to add a line with the HTML comment **&lt;!-
 &lt;!-- ToC --&gt;
 ```
 
-The table of contents will be written just after the HTML comment line. And you can add this comment line as many times as you want, if you are, like me, a big fan of tables of contents, or if the length of your document needs a second table of contents at its end.
+The table of contents will be written just after the HTML comment line, and you can add this comment line as many times as you want, if you are, like me, a big fan of tables of contents, or if the length of your document needs a second table of contents at its end.
 
