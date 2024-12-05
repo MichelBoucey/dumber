@@ -35,7 +35,7 @@ Usage: dumber [OPTION] FILE
 To add a table of contents you have to add a line with the HTML comment **&lt;!-- Toc --!&gt;**, where you want a table of contents to appear:
 
 ```
-&lt;!-- ToC --&gt;
+<!-- ToC -->
 ```
 
 The table of contents will be written just after the HTML comment line, and you can add this comment line as many times as you want, if you are, like me, a big fan of tables of contents, or if the length of your document needs a second table of contents at its end.
