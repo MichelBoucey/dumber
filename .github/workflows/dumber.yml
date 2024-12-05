@@ -19,3 +19,6 @@ jobs:
           GOPROXY: "https://proxy.golang.org"
         run: go build -o dumber
 
+      - name: Tests
+        run: make test
+
