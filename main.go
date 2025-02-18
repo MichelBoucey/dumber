@@ -75,7 +75,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag == true {
-		fmt.Println("dumber v" + version + " (" + commitShortHash + ")" + newLine + "Copyright © 2021-2024 Michel Boucey" + newLine + "Released under 3-Clause BSD License")
+		fmt.Println("dumber v" + version + " (" + commitShortHash + ")" + newLine + "Copyright © 2021-2025 Michel Boucey" + newLine + "Released under 3-Clause BSD License")
 		os.Exit(-1)
 	}
 
