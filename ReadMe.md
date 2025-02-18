@@ -17,7 +17,7 @@ _N.B._ : The table of contents generation is not tested nor implemented for UTF8
 make install
 ```
 
-## 2. Optional tests
+## 2. Optional test suite
 
 Rebuild and install a brand new `dumber` and run a small test suite.
 
