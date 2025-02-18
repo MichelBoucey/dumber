@@ -17,9 +17,17 @@ _N.B._ : The table of contents generation is not tested nor implemented for UTF8
 make install
 ```
 
-## 2. Usage
+## 2. Optional tests
 
-### 2.1. Command line options
+Rebuild and install a brand new `dumber` and run a small test suite.
+
+```
+make test
+```
+
+## 3. Usage
+
+### 3.1. Command line options
 ```
 user@machine $ dumber -h
 Usage: dumber [OPTION] FILE
@@ -31,7 +39,7 @@ Usage: dumber [OPTION] FILE
   -w	Write section numbers to the .md file (default to stdout)
 ```
 
-### 2.2. Add table(s) of contents
+### 3.2. Add table(s) of contents
 
 To add a table of contents you have to add a line with the HTML comment **&lt;!-- Toc --!&gt;**, where you want a table of contents to appear:
 
