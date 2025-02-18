@@ -4,7 +4,7 @@
 
 With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to your Mardown files:
 
-- section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title.
+- section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` for numbering *all* section tags.
 - a table of contents with links on entries.
 
 See an [example](./example.md).
@@ -24,10 +24,11 @@ make install
 user@machine $ dumber -h
 Usage: dumber [OPTION] FILE
 
-  -h    Show help
-  -r    Remove section numbers and table of contents from the .md file
-  -v    Show version
-  -w    Write section numbers to the .md file (default to stdout)
+  -a	Numbering all sections from the main document title (H1)
+  -h	Show help
+  -r	Remove table of contents and section numbers from the .md file
+  -v	Show version
+  -w	Write section numbers to the .md file (default to stdout)
 ```
 
 ### 2.2. Add table(s) of contents
