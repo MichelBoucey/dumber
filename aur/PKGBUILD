@@ -1,0 +1,33 @@
+
+# Maintainer: Michel Boucey <michel dot boucey at gmail dot com>
+# Contributor: Michel Boucey <michel dot boucey at gmail dot com>
+
+pkgname=dumber
+pkgver=3.0.0
+pkgrel=1
+pkgdesc='(un)numbering Mardown section and add/remove tables of content'
+arch=('x86_64')
+url="https://github.com/MichelBoucey/$pkgname"
+license=('BSD-3-Clause')
+makedepends=('go')
+source=("$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('f1022755be3073829263cec221c7584404e507b3eecb5cf2c2537b772e21b325')
+
+prepare(){
+  cd "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make build
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  make test
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+}
