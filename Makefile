@@ -25,7 +25,7 @@ install: build
 	@echo && dumber -v || echo
 
 .PHONY: test
-test: clean install
+test: clean build
 	test/run
 	@echo
 
