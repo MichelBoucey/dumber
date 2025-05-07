@@ -43,7 +43,7 @@ var (
 
 func main() {
 
-	version := "3.0.0.1"
+	version := "3.0.0.3"
 
         var firstH1Done bool = false
 	var headerCounters [7]int
