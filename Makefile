@@ -11,7 +11,6 @@ help:
 	@echo
 
 build:
-	@echo
 	${BUILD}
 
 clean:
@@ -22,7 +21,6 @@ distclean: clean
 	
 install: build
 	${INSTALL}
-	@echo && dumber -v || echo
 
 .PHONY: test
 test: clean build
