@@ -9,13 +9,19 @@ With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to y
 
 See an [example](./example.md).
 
-_N.B._ : The table of contents generation is not tested nor implemented for UTF8 yet.
+_N.B._ : The table of contents generation is not tested nor implemented for UTF8.
 
 ## 1. Installation
+
+### 1.1. From sources
 
 ```
 make install
 ```
+
+### 1.2. From ArchLinux AUR
+
+Build the ArchLinux package for `dumber` from [this PKGBUILD file](https://aur.archlinux.org/packages/dumber).
 
 ## 2. Optional test suite
 
