@@ -21,7 +21,7 @@ make install
 
 ### 1.2. From ArchLinux AUR
 
-Build the ArchLinux package for `dumber` from [this PKGBUILD file](https://aur.archlinux.org/packages/dumber).
+Build the ArchLinux package for `dumber` from [AUR](https://aur.archlinux.org/packages/dumber).
 
 ## 2. Optional test suite
 
