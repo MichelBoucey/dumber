@@ -23,6 +23,8 @@ make install
 
 Build the ArchLinux package for `dumber` from [AUR](https://aur.archlinux.org/packages/dumber).
 
+Or with `yay`, run `yay -S dumber`.
+
 ## 2. Optional test suite
 
 Rebuild and install a brand new `dumber` and run a small test suite.
