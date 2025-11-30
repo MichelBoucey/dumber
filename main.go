@@ -1,7 +1,7 @@
 //
 // dumber, a command line tool for numbering or denumbering Mardown sections file and accordingly adding or removing Table(s) of Contents
 //
-//      Copyright (c) 2021-2024 Michel Boucey
+//      Copyright (c) 2021-2025 Michel Boucey
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 //
@@ -45,7 +45,7 @@ func main() {
 
 	version := "3.0.0.3"
 
-        var firstH1Done bool = false
+	var firstH1Done bool = false
 	var headerCounters [7]int
 	var headerLines []string
 	var isToCInsertionLine bool = false
@@ -67,9 +67,9 @@ func main() {
 	}
 
 	helpFlag := flag.Bool("h", false, "Show help")
-	removeFlag := flag.Bool("r", false, "Remove table of contents and section numbers from the .md file")
+	removeFlag := flag.Bool("r", false, "Remove table(s) of contents and section numbers from the .md file")
 	versionFlag := flag.Bool("v", false, "Show version")
-	writeFlag := flag.Bool("w", false, "Write section numbers to the .md file (default to stdout)")
+	writeFlag := flag.Bool("w", false, "Write table(s) of contents and section numbers to the .md file (default to stdout)")
 	noTitleSkipFlag := flag.Bool("a", false, "Numbering all sections from the main document title (H1)")
 
 	flag.Parse()
@@ -123,11 +123,11 @@ func main() {
 
 			}
 
-                        if !firstH1Done && currentHeaderType == 1 {
+			if !firstH1Done && currentHeaderType == 1 {
 
-                                firstH1Done = true
+				firstH1Done = true
 
-                        }
+			}
 
 			if *removeFlag {
 
