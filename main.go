@@ -1,7 +1,7 @@
 //
 // dumber, a command line tool for numbering or denumbering Mardown sections file and accordingly adding or removing Table(s) of Contents
 //
-//      Copyright (c) 2021-2025 Michel Boucey
+//      Copyright (c) 2021-2026 Michel Boucey
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 //
@@ -75,7 +75,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag == true {
-		fmt.Println("dumber v" + version + " (" + commitShortHash + ")" + newLine + "Copyright © 2021-2025 Michel Boucey" + newLine + "Released under 3-Clause BSD License")
+		fmt.Println("dumber v" + version + " (" + commitShortHash + ")" + newLine + "Copyright © 2021-2026 Michel Boucey" + newLine + "Released under 3-Clause BSD License")
 		os.Exit(-1)
 	}
 
