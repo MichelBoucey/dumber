@@ -1,4 +1,4 @@
-# Dumber
+# Dumber ![Compilation & tests](https://github.com/MichelBoucey/dumber/actions/workflows/dumber.yml/badge.svg)
 
 `dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and creation of table(s) of contents accordingly.
 
