@@ -2,10 +2,10 @@
 
 `dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and creation of table(s) of contents accordingly.
 
-With `dumber` (you already use `git`, don't you?) you can *add* or *remove* to your Mardown files:
+With `dumber` (you already use `git`, don't you?) you can add to, update, or remove from your Mardown files:
 
 - section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` for numbering *all* section tags.
-- a table of contents with links on entries.
+- table(s) of contents with links on entries.
 
 See an [example](./example.md).
 
