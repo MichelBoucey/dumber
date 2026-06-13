@@ -1,0 +1,7 @@
+[package]
+name = "dumber"
+version = "4.0.0"
+edition = "2024"
+
+[dependencies]
+regex = "1.12.4"
