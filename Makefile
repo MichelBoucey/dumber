@@ -23,7 +23,7 @@ r: b
 	./target/debug/dumber
 
 .PHONY: test
-t:
+t: c b
 	test/run
 	@echo
 

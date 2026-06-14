@@ -1,15 +1,18 @@
 use regex::Regex;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
+mod internal;
 
 fn main() -> io::Result<()> {
-    let mut _header_counts: [i8; 7];
-    let _header_lines: Vec<String> = Vec::new();
+    let mut header_counters: [i8; 7] = [0; 7];
+    let mut section: String = String::from("");
     let header_line = Regex::new(r"^(#{1,6})\s+([\d\.]*)\s*(.*)$").unwrap();
-    let mut _rewritten_line: String;
-    let mut _section: &mut String;
-    // let _toc_insertion_line = Regex::new(r"").unwrap();
-    // let _toc_line = Regex::new(r"").unwrap();
+    let no_title_skip: bool = false;
+    let mut first_h1_done: bool = false;
+    // let toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
+    // let toc_line = Regex::new(r"^\s*-\s\[[\d\.]*\]\(#\d*").unwrap();
+    // let header_lines: Vec<String> = Vec::new();
+    // let mut rewritten_line: String;
 
     let file = File::open("test/test.md")?;
     let reader = BufReader::new(file);
@@ -18,16 +21,45 @@ fn main() -> io::Result<()> {
         let line = result.unwrap();
         let caps = header_line.captures(&line);
 
-        if caps.is_some() {
-            let cs = caps.unwrap();
+        if let Some(cs) = caps {
             if header_line.is_match(&line) {
                 if cs.len() == 4 {
-                    let _header = &cs[1];
-                    let _current_header_type = &cs[1].len();
+                    let header = &cs[1];
+                    let title = &cs[3];
+                    let current_header_type = &cs[1].len();
+
+                    if first_h1_done || no_title_skip {
+                        header_counters[*current_header_type] += 1
+                    }
+
+                    if !first_h1_done && *current_header_type == 1 {
+                        first_h1_done = true;
+                        // println!("{}", "Hey!");
+                    }
+
+                    for (header_type,_) in header_counters.iter().enumerate().skip(1) {
+                        internal::add_section_chunk(
+                            &mut section,
+                            &header_counters[header_type],
+                            current_header_type,
+                            &header_type,
+                        );
+                    }
+
+                    if !section.is_empty() {
+                        section += " "
+                    }
+
                     println!(
                         "{}",
-                        cs[1].to_owned() + " " + "1.2." + " " + &cs[3].to_owned()
+                        header.to_owned() + " " + &*section + title
                     );
+
+                    for v in header_counters.iter_mut().skip(current_header_type + 1) {
+                        *v = 0;
+                    }
+
+                    section = "".to_string();
                 }
             }
         } else {
