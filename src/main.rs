@@ -1,7 +1,9 @@
 use regex::Regex;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
+use crate::clap::cli;
 mod internal;
+mod clap;
 
 fn main() -> io::Result<()> {
     let mut header_counters: [i8; 7] = [0; 7];
@@ -14,7 +16,9 @@ fn main() -> io::Result<()> {
     // let header_lines: Vec<String> = Vec::new();
     // let mut rewritten_line: String;
 
-    let file = File::open("test/test.md")?;
+    let matches = cli().get_matches();
+    let file = matches.get_one::<String>("file").expect("required");
+    let file = File::open(file)?;
     let reader = BufReader::new(file);
 
     for result in reader.lines() {

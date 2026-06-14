@@ -15,8 +15,7 @@ RIGHT_ALL_NUMBERED_SECTIONS_CHECKSUM=b79bf385dc86654f952b0548da8d3f13
 echo
 
 # Numbering Markdown sections test
-# ${DUMBER_PATH} test/test.md > test/numbered-sections.md
-${DUMBER_PATH} > test/numbered-sections.md
+${DUMBER_PATH} test/test.md > test/numbered-sections.md
 
 echo -n "- Numbering Markdown sections                               -> "
 

@@ -20,7 +20,7 @@ e:
 	vim src/main.rs
 
 r: b
-	./target/debug/dumber
+	./target/debug/dumber test/test.md
 
 .PHONY: test
 t: c b
