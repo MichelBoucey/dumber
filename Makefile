@@ -35,3 +35,6 @@ i:
 
 w:
 	bacon
+
+l:
+	cargo clippy
