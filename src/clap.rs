@@ -14,6 +14,13 @@ pub fn cli() -> Command {
                 .help("Write changes to the .md file (default to stdout)"),
         )
         .arg(
+            Arg::new("remove")
+                .action(ArgAction::SetTrue)
+                .short('r')
+                .long("remove")
+                .help("Remove changes from the .md file (default to stdout)"),
+        )
+        .arg(
             Arg::new("FILE")
                 .required(true)
                 .help("The Markdown file to process"),

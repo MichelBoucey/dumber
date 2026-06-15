@@ -21,6 +21,7 @@ fn main() -> io::Result<()> {
     let matches = cli().get_matches();
     let md_filepath = matches.get_one::<String>("FILE").expect("required");
     let flag_write = matches.get_one::<bool>("write").expect("required");
+    let flag_remove = matches.get_one::<bool>("remove").expect("required");
 
     let file = File::open(md_filepath)?;
     let reader = BufReader::new(file);
@@ -44,28 +45,32 @@ fn main() -> io::Result<()> {
                         first_h1_done = true;
                     }
 
-                    for (header_type, _) in header_counters.iter().enumerate().skip(1) {
-                        internal::add_section_chunk(
-                            &mut section,
-                            &header_counters[header_type],
-                            current_header_type,
-                            &header_type,
-                        );
+                    if *flag_remove {
+                        rewritten_line = header.to_owned() + " " + title
+                    } else {
+                        for (header_type, _) in header_counters.iter().enumerate().skip(1) {
+                            internal::add_section_chunk(
+                                &mut section,
+                                &header_counters[header_type],
+                                current_header_type,
+                                &header_type,
+                            );
+                        }
+
+                        if !section.is_empty() {
+                            section += " "
+                        }
+
+                        rewritten_line = header.to_owned() + " " + &*section + title;
+
+                        header_lines.push(rewritten_line.clone());
+
+                        for v in header_counters.iter_mut().skip(current_header_type + 1) {
+                            *v = 0;
+                        }
+
+                        section = "".to_string();
                     }
-
-                    if !section.is_empty() {
-                        section += " "
-                    }
-
-                    rewritten_line = header.to_owned() + " " + &*section + title;
-
-                    header_lines.push(rewritten_line.clone());
-
-                    for v in header_counters.iter_mut().skip(current_header_type + 1) {
-                        *v = 0;
-                    }
-
-                    section = "".to_string();
                 }
             }
 
@@ -76,13 +81,10 @@ fn main() -> io::Result<()> {
     }
 
     if *flag_write {
-
-        std::fs::write(md_filepath, rewritten_lines.join("\n") + "\n").expect("failed to write to file");
-
+        std::fs::write(md_filepath, rewritten_lines.join("\n") + "\n")
+            .expect("failed to write to file");
     } else {
-
         println!("{}", rewritten_lines.join("\n"));
-
     }
 
     Ok(())

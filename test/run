@@ -25,8 +25,6 @@ else
     echo "KO"
 fi
 
-exit 0
-
 # Unnumbering Markdown sections test
 ${DUMBER_PATH} -r test/numbered-sections.md > test/unnumbered-sections.md
 
@@ -37,6 +35,8 @@ if [ "$(filesum "test/unnumbered-sections.md")" == "$RIGHT_CHECKSUM" ]; then
 else
     echo "KO"
 fi
+
+exit 0
 
 # Numbering All Markdown sections test
 ${DUMBER_PATH} -a test/test.md > test/all-numbered-sections.md
