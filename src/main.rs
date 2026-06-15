@@ -1,24 +1,28 @@
+use crate::clap::cli;
 use regex::Regex;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
-use crate::clap::cli;
-mod internal;
 mod clap;
+mod internal;
 
 fn main() -> io::Result<()> {
     let mut header_counters: [i8; 7] = [0; 7];
+    let mut header_lines: Vec<String> = Vec::new();
     let mut section: String = String::from("");
-    let header_line = Regex::new(r"^(#{1,6})\s+([\d\.]*)\s*(.*)$").unwrap();
     let no_title_skip: bool = false;
     let mut first_h1_done: bool = false;
-    // let toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
-    // let toc_line = Regex::new(r"^\s*-\s\[[\d\.]*\]\(#\d*").unwrap();
-    // let header_lines: Vec<String> = Vec::new();
-    // let mut rewritten_line: String;
+    let mut rewritten_line: String = String::from("");
+    let mut rewritten_lines: Vec<String> = Vec::new();
+
+    let header_line = Regex::new(r"^(#{1,6})\s+([\d\.]*)\s*(.*)$").unwrap();
+    let _toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
+    let _toc_line = Regex::new(r"^\s*-\s\[[\d\.]*\]\(#\d*").unwrap();
 
     let matches = cli().get_matches();
-    let file = matches.get_one::<String>("file").expect("required");
-    let file = File::open(file)?;
+    let md_filepath = matches.get_one::<String>("FILE").expect("required");
+    let flag_write = matches.get_one::<bool>("write").expect("required");
+
+    let file = File::open(md_filepath)?;
     let reader = BufReader::new(file);
 
     for result in reader.lines() {
@@ -38,10 +42,9 @@ fn main() -> io::Result<()> {
 
                     if !first_h1_done && *current_header_type == 1 {
                         first_h1_done = true;
-                        // println!("{}", "Hey!");
                     }
 
-                    for (header_type,_) in header_counters.iter().enumerate().skip(1) {
+                    for (header_type, _) in header_counters.iter().enumerate().skip(1) {
                         internal::add_section_chunk(
                             &mut section,
                             &header_counters[header_type],
@@ -54,10 +57,9 @@ fn main() -> io::Result<()> {
                         section += " "
                     }
 
-                    println!(
-                        "{}",
-                        header.to_owned() + " " + &*section + title
-                    );
+                    rewritten_line = header.to_owned() + " " + &*section + title;
+
+                    header_lines.push(rewritten_line.clone());
 
                     for v in header_counters.iter_mut().skip(current_header_type + 1) {
                         *v = 0;
@@ -66,9 +68,21 @@ fn main() -> io::Result<()> {
                     section = "".to_string();
                 }
             }
+
+            rewritten_lines.push(rewritten_line.clone());
         } else {
-            println!("{}", line);
+            rewritten_lines.push(line);
         }
+    }
+
+    if *flag_write {
+
+        std::fs::write(md_filepath, rewritten_lines.join("\n") + "\n").expect("failed to write to file");
+
+    } else {
+
+        println!("{}", rewritten_lines.join("\n"));
+
     }
 
     Ok(())
