@@ -1,17 +1,12 @@
-
 COMMIT_SHORT_SHA := $(shell git rev-parse --short HEAD)
-BUILD=go build -o dumber -ldflags "-w -s -buildid= -X 'main.commitShortHash=$(COMMIT_SHORT_SHA)'" -trimpath
 INSTALL_BIN_PATH=~/.cargo/bin/
 INSTALL=install -Dm755 dumber ${INSTALL_BIN_PATH}
 
-help:
-	@echo "Usage:"
-	@echo
-	@echo "    make [build|install|clean|distclean|test]"
-	@echo
+h:
+	@echo "Makefile of dumber"
 
 c:
-	rm -f dumber test/*sections*
+	@rm -f dumber test/*sections*
 
 b:
 	cargo build
@@ -24,6 +19,7 @@ r: b
 
 .PHONY: test
 t: c b
+	@echo
 	test/run
 	@echo
 
