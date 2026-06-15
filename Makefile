@@ -19,9 +19,7 @@ r: b
 
 .PHONY: test
 t: c b
-	@echo
 	test/run
-	@echo
 
 f:
 	rustfmt src/main.rs

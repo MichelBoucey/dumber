@@ -17,7 +17,7 @@ echo
 # Numbering Markdown sections test
 ${DUMBER_PATH} test/test.md > test/numbered-sections.md
 
-echo -n "- Numbering Markdown sections                               -> "
+echo -n "- Numbering Markdown sections                                        -> "
 
 if [ "$(filesum "test/numbered-sections.md")" == "$RIGHT_NUMBERED_SECTIONS_CHECKSUM" ]; then
     echo "OK"
@@ -28,7 +28,7 @@ fi
 # Unnumbering Markdown sections test
 ${DUMBER_PATH} -r test/numbered-sections.md > test/unnumbered-sections.md
 
-echo -n "- Unnumbering Markdown sections                             -> "
+echo -n "- Unnumbering Markdown sections                                      -> "
 
 if [ "$(filesum "test/unnumbered-sections.md")" == "$RIGHT_CHECKSUM" ]; then
     echo "OK"
@@ -36,12 +36,10 @@ else
     echo "KO"
 fi
 
-exit 0
-
 # Numbering All Markdown sections test
 ${DUMBER_PATH} -a test/test.md > test/all-numbered-sections.md
 
-echo -n "- Numbering All Markdown sections (with title section H1)   -> "
+echo -n "- Numbering All Markdown sections (with the main title section H1)   -> "
 
 if [ "$(filesum "test/all-numbered-sections.md")" == "$RIGHT_ALL_NUMBERED_SECTIONS_CHECKSUM" ]; then
     echo "OK"
@@ -52,13 +50,15 @@ fi
 # Unnumbering All Markdown sections test
 ${DUMBER_PATH} -r test/all-numbered-sections.md > test/all-unnumbered-sections.md
 
-echo -n "- Unnumbering All Markdown sections (with title section H1) -> "
+echo -n "- Unnumbering All Markdown sections (with the main title section H1) -> "
 
 if [ "$(filesum "test/all-unnumbered-sections.md")" == "$RIGHT_CHECKSUM" ]; then
     echo "OK"
 else
     echo "KO"
 fi
+
+exit 0
 
 # Numbering Markdown sections and adding a table of contents test
 ${DUMBER_PATH} test/test-toc.md > test/numbered-sections-and-toc.md

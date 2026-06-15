@@ -9,10 +9,9 @@ fn main() -> io::Result<()> {
     let mut header_counters: [i8; 7] = [0; 7];
     let mut header_lines: Vec<String> = Vec::new();
     let mut section: String = String::from("");
-    let no_title_skip: bool = false;
-    let mut first_h1_done: bool = false;
     let mut rewritten_line: String = String::from("");
     let mut rewritten_lines: Vec<String> = Vec::new();
+    let mut first_h1_done: bool = false;
 
     let header_line = Regex::new(r"^(#{1,6})\s+([\d\.]*)\s*(.*)$").unwrap();
     let _toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
@@ -22,6 +21,7 @@ fn main() -> io::Result<()> {
     let md_filepath = matches.get_one::<String>("FILE").expect("required");
     let flag_write = matches.get_one::<bool>("write").expect("required");
     let flag_remove = matches.get_one::<bool>("remove").expect("required");
+    let no_title_skip = matches.get_one::<bool>("all").expect("required");
 
     let file = File::open(md_filepath)?;
     let reader = BufReader::new(file);
@@ -31,46 +31,44 @@ fn main() -> io::Result<()> {
         let caps = header_line.captures(&line);
 
         if let Some(cs) = caps {
-            if header_line.is_match(&line) {
-                if cs.len() == 4 {
-                    let header = &cs[1];
-                    let title = &cs[3];
-                    let current_header_type = &cs[1].len();
+            if header_line.is_match(&line) && cs.len() == 4 {
+                let header = &cs[1];
+                let title = &cs[3];
+                let current_header_type = &cs[1].len();
 
-                    if first_h1_done || no_title_skip {
-                        header_counters[*current_header_type] += 1
+                if first_h1_done || *no_title_skip {
+                    header_counters[*current_header_type] += 1
+                }
+
+                if !first_h1_done && *current_header_type == 1 {
+                    first_h1_done = true;
+                }
+
+                if *flag_remove {
+                    rewritten_line = header.to_owned() + " " + title
+                } else {
+                    for (header_type, _) in header_counters.iter().enumerate().skip(1) {
+                        internal::add_section_chunk(
+                            &mut section,
+                            &header_counters[header_type],
+                            current_header_type,
+                            &header_type,
+                        );
                     }
 
-                    if !first_h1_done && *current_header_type == 1 {
-                        first_h1_done = true;
+                    if !section.is_empty() {
+                        section += " "
                     }
 
-                    if *flag_remove {
-                        rewritten_line = header.to_owned() + " " + title
-                    } else {
-                        for (header_type, _) in header_counters.iter().enumerate().skip(1) {
-                            internal::add_section_chunk(
-                                &mut section,
-                                &header_counters[header_type],
-                                current_header_type,
-                                &header_type,
-                            );
-                        }
+                    rewritten_line = header.to_owned() + " " + &*section + title;
 
-                        if !section.is_empty() {
-                            section += " "
-                        }
+                    header_lines.push(rewritten_line.clone());
 
-                        rewritten_line = header.to_owned() + " " + &*section + title;
-
-                        header_lines.push(rewritten_line.clone());
-
-                        for v in header_counters.iter_mut().skip(current_header_type + 1) {
-                            *v = 0;
-                        }
-
-                        section = "".to_string();
+                    for v in header_counters.iter_mut().skip(current_header_type + 1) {
+                        *v = 0;
                     }
+
+                    section = "".to_string();
                 }
             }
 

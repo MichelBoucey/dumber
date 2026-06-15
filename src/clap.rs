@@ -14,6 +14,13 @@ pub fn cli() -> Command {
                 .help("Write changes to the .md file (default to stdout)"),
         )
         .arg(
+            Arg::new("all")
+                .action(ArgAction::SetTrue)
+                .short('a')
+                .long("all-headers")
+                .help("Numbering all section headers, starting from the main document title, first H1"),
+        )
+        .arg(
             Arg::new("remove")
                 .action(ArgAction::SetTrue)
                 .short('r')
