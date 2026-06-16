@@ -4,6 +4,7 @@ use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 mod clap;
 mod internal;
+use crate::internal::to_toc_entry;
 
 fn main() -> io::Result<()> {
     let mut header_counters: [i8; 7] = [0; 7];
@@ -12,10 +13,12 @@ fn main() -> io::Result<()> {
     let mut rewritten_line: String = String::from("");
     let mut rewritten_lines: Vec<String> = Vec::new();
     let mut first_h1_done: bool = false;
-
     let header_line = Regex::new(r"^(#{1,6})\s+([\d\.]*)\s*(.*)$").unwrap();
-    let _toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
-    let _toc_line = Regex::new(r"^\s*-\s\[[\d\.]*\]\(#\d*").unwrap();
+
+    let mut is_toc_insertion_line: bool = false;
+    let mut upper_header_level: usize = 0;
+    let toc_insertion_line = Regex::new(r"^<!--\s+\bToC\b\s+-->\s*$").unwrap();
+    let toc_line = Regex::new(r"^\s*-\s\[[\d\.]*\]\(#\d*").unwrap();
 
     let matches = cli().get_matches();
     let md_filepath = matches.get_one::<String>("FILE").expect("required");
@@ -73,16 +76,38 @@ fn main() -> io::Result<()> {
             }
 
             rewritten_lines.push(rewritten_line.clone());
-        } else {
+        } else if !toc_line.is_match(&line) {
+            if toc_insertion_line.is_match(&line) {
+                is_toc_insertion_line = true
+            }
             rewritten_lines.push(line);
         }
     }
 
+    if !flag_remove && is_toc_insertion_line {
+        let first_header_line = header_line.captures(&header_lines[0]).unwrap();
+        upper_header_level = first_header_line[1].len()
+    }
+
     if *flag_write {
+        // let mut writer = BufWriter::new(file);
+        // writeln!(writer, "First line")?;
         std::fs::write(md_filepath, rewritten_lines.join("\n") + "\n")
             .expect("failed to write to file");
     } else {
-        println!("{}", rewritten_lines.join("\n"));
+        for rewritten_line in rewritten_lines {
+            println!("{}", rewritten_line);
+
+            if !flag_remove && is_toc_insertion_line && toc_insertion_line.is_match(&rewritten_line)
+            {
+              for hline in header_lines.clone().into_iter().skip(1) {
+                println!(
+                    "{}",
+                    to_toc_entry(upper_header_level, header_line.clone(), hline.to_string())
+                )
+                }
+            }
+        }
     }
 
     Ok(())
