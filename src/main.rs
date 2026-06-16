@@ -1,7 +1,7 @@
 use crate::clap::cli;
 use regex::Regex;
 use std::fs::File;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{self, prelude::*, BufReader, BufWriter, Write};
 mod clap;
 mod internal;
 use crate::internal::to_toc_entry;
@@ -90,21 +90,31 @@ fn main() -> io::Result<()> {
     }
 
     if *flag_write {
-        // let mut writer = BufWriter::new(file);
-        // writeln!(writer, "First line")?;
-        std::fs::write(md_filepath, rewritten_lines.join("\n") + "\n")
-            .expect("failed to write to file");
+        let file = File::create(md_filepath)?;
+        let mut writer = BufWriter::new(file);
+        for rewritten_line in rewritten_lines {
+            writeln!(writer, "{}", rewritten_line)?;
+            if !flag_remove && is_toc_insertion_line && toc_insertion_line.is_match(&rewritten_line)
+            {
+                for hline in header_lines.clone().into_iter().skip(1) {
+                    writeln!(
+                        writer,
+                        "{}",
+                        to_toc_entry(upper_header_level, header_line.clone(), hline.to_string())
+                    )?
+                }
+            }
+        }
     } else {
         for rewritten_line in rewritten_lines {
             println!("{}", rewritten_line);
-
             if !flag_remove && is_toc_insertion_line && toc_insertion_line.is_match(&rewritten_line)
             {
-              for hline in header_lines.clone().into_iter().skip(1) {
-                println!(
-                    "{}",
-                    to_toc_entry(upper_header_level, header_line.clone(), hline.to_string())
-                )
+                for hline in header_lines.clone().into_iter().skip(1) {
+                    println!(
+                        "{}",
+                        to_toc_entry(upper_header_level, header_line.clone(), hline.to_string())
+                    )
                 }
             }
         }
