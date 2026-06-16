@@ -11,6 +11,9 @@ c:
 b:
 	cargo build
 
+br:
+	cargo build --release
+
 e:
 	vim src/main.rs
 

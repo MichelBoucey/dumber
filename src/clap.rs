@@ -2,7 +2,7 @@ use clap::{Arg, ArgAction, Command};
 
 pub fn cli() -> Command {
     Command::new("dumber")
-        .about("A tool to (un)mumber sections and add/move toc(s) of a Markdown document")
+        .about("A tool to (un)number sections and add/move toc(s) of a Markdown document")
         .override_usage("Usage: dumber [OPTIONS] <FILE>")
         .arg_required_else_help(true)
         .allow_external_subcommands(true)
