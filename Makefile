@@ -1,31 +1,39 @@
-h:
-	@echo "Makefile of dumber"
+help:
+	@echo "edit"
+	@echo "build"
+	@echo "build-release"
+	@echo "test"
+	@echo "fmt"
+	@echo "install"
+	@echo "watch"
+	@echo "lint"
+	@echo "clean"
 
-c:
-	@cargo clean
-	@rm -f dumber test/*sections*
-
-b:
-	cargo build
-
-br:
-	cargo build --release
-
-e:
+edit:
 	vim src/main.rs
 
+build:
+	cargo build
+
+build-release:
+	cargo build --release
+
 .PHONY: test
-t: c b
+test: build
 	test/run
 
-f:
+fmt:
 	rustfmt src/main.rs
 
-i: br
-	cp target/release/dumber /usr/local/bin/
+install:
+	cargo install --path .
 
-w:
+watch:
 	bacon
 
-l:
+lint:
 	cargo clippy
+
+clean:
+	@cargo clean
+	@rm -f dumber test/*sections*
