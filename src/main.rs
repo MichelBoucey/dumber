@@ -1,14 +1,13 @@
 use regex::Regex;
-use std::fs::File;
+use std::fs::{exists, File};
 use std::io::{self, prelude::*, BufReader, BufWriter, Write};
 mod args;
 mod internal;
 use crate::args::cli;
 use crate::internal::to_toc_entry;
-use std::process::{Command, exit};
+use std::process::{exit, Command};
 
 fn main() -> io::Result<()> {
-
     let version: String = "v4.0.0".to_string();
 
     let mut header_counters: [i8; 7] = [0; 7];
@@ -48,6 +47,11 @@ fn main() -> io::Result<()> {
     }
 
     if let Some(md_filepath) = matches.get_one::<String>("FILE") {
+        if !exists(md_filepath).unwrap() {
+            println!("{}", md_filepath.to_owned() + " is not a file");
+            exit(1)
+        }
+
         let file = File::open(md_filepath)?;
 
         let reader = BufReader::new(file);
