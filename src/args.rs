@@ -31,7 +31,7 @@ pub fn cli() -> Command {
                 .action(ArgAction::SetTrue)
                 .short('v')
                 .long("version")
-                .help("Show version"),
+                .help("Print version"),
         )
         .arg(
             Arg::new("FILE")

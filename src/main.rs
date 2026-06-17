@@ -155,7 +155,7 @@ fn main() -> io::Result<()> {
             }
         }
     } else {
-        println!("Usage: dumber [OPTIONS] <FILE>");
+        println!("Usage: dumber [OPTIONS] [FILE]");
         println!("Specify the --help flag to see full usage")
     }
 
