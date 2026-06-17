@@ -49,7 +49,7 @@ Options:
   -w, --write        Write changes to the .md file (default to stdout)
   -r, --remove       Remove changes from a modified .md file (default to stdout)
   -a, --all-headers  Numbering all section headers, starting from the main document title, first H1
-  -v, --version      Show version
+  -v, --version      Print version
   -h, --help         Print help
 ```
 
