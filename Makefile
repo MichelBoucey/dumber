@@ -1,11 +1,8 @@
-COMMIT_SHORT_SHA := $(shell git rev-parse --short HEAD)
-INSTALL_BIN_PATH=~/.cargo/bin/
-INSTALL=install -Dm755 dumber ${INSTALL_BIN_PATH}
-
 h:
 	@echo "Makefile of dumber"
 
 c:
+	@cargo clean
 	@rm -f dumber test/*sections*
 
 b:
@@ -17,9 +14,6 @@ br:
 e:
 	vim src/main.rs
 
-r: b
-	./target/debug/dumber test/test.md
-
 .PHONY: test
 t: c b
 	test/run
@@ -27,8 +21,8 @@ t: c b
 f:
 	rustfmt src/main.rs
 
-i:
-	cargo install --path $(INSTALL_BIN_PATH)
+i: br
+	cp target/release/dumber /usr/local/bin/
 
 w:
 	bacon

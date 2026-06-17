@@ -1,15 +1,14 @@
 use regex::Regex;
+use std::env;
 use std::fs::{exists, File};
 use std::io::{self, prelude::*, BufReader, BufWriter, Write};
 mod args;
 mod internal;
 use crate::args::cli;
 use crate::internal::to_toc_entry;
-use std::process::{exit, Command};
+use std::process::exit;
 
 fn main() -> io::Result<()> {
-    let version: String = "v4.0.0".to_string();
-
     let mut header_counters: [i8; 7] = [0; 7];
     let mut header_lines: Vec<String> = Vec::new();
     let mut section: String = String::from("");
@@ -30,16 +29,12 @@ fn main() -> io::Result<()> {
     let flag_version = matches.get_one::<bool>("version").expect("required");
 
     if *flag_version {
-        let githash = Command::new("git")
-            .args(["rev-parse", "--short", "HEAD"])
-            .output()
-            .unwrap();
         println!(
             "{}",
             "dumber ".to_owned()
-                + &version
+                + env!("CARGO_PKG_VERSION")
                 + " ("
-                + String::from_utf8_lossy(&githash.stdout).trim()
+                + env!("GIT_COMMIT_SHORT_HASH")
                 + ") released under 3-Clause BSD License"
         );
         println!("Copyright © 2021-2026 Michel Boucey (michel.boucey@gmail.com)");
