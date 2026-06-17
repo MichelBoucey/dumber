@@ -2,16 +2,22 @@ use clap::{Arg, ArgAction, Command};
 
 pub fn cli() -> Command {
     Command::new("dumber")
-        .about("A tool to (un)number sections and add/move toc(s) of a Markdown document")
-        .override_usage("Usage: dumber [OPTIONS] <FILE>")
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
+        .author("Michel Boucey, michel.boucey@gmail.com")
+        .about("A tool to (un)number sections and add/remove toc(s) of a Markdown document")
+        .arg_required_else_help(false)
         .arg(
             Arg::new("write")
                 .action(ArgAction::SetTrue)
                 .short('w')
                 .long("write")
                 .help("Write changes to the .md file (default to stdout)"),
+        )
+        .arg(
+            Arg::new("remove")
+                .action(ArgAction::SetTrue)
+                .short('r')
+                .long("remove")
+                .help("Remove changes from a modified .md file (default to stdout)"),
         )
         .arg(
             Arg::new("all")
@@ -21,15 +27,14 @@ pub fn cli() -> Command {
                 .help("Numbering all section headers, starting from the main document title, first H1"),
         )
         .arg(
-            Arg::new("remove")
+            Arg::new("version")
                 .action(ArgAction::SetTrue)
-                .short('r')
-                .long("remove")
-                .help("Remove changes from the .md file (default to stdout)"),
+                .short('v')
+                .long("version")
+                .help("Show version"),
         )
         .arg(
             Arg::new("FILE")
-                .required(true)
                 .help("The Markdown file to process"),
         )
 }
