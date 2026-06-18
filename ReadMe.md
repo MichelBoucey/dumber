@@ -1,4 +1,4 @@
-# Dumber [![Rust CI](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml)
+# Dumber [![CI](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml)
 
 `dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and creation of table(s) of contents accordingly.
 
