@@ -7,7 +7,7 @@ With `dumber` (you already use `git`, don't you?) you can add to, update, or rem
 - section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` for numbering *all* section tags.
 - table(s) of contents with links on entries.
 
-See an [example](./example.md).
+See an [example](https://github.com/MichelBoucey/dumber/blob/main/example.md).
 
 _N.B._ : The table of contents generation is not tested nor implemented for UTF8.
 
