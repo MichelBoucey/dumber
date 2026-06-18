@@ -1,13 +1,16 @@
 help:
-	@echo "edit"
-	@echo "build"
-	@echo "build-release"
-	@echo "test"
-	@echo "fmt"
-	@echo "install"
-	@echo "watch"
-	@echo "lint"
-	@echo "clean"
+	@echo "Usage:"
+	@echo
+	@echo "    edit"
+	@echo "    build"
+	@echo "    build-release"
+	@echo "    test"
+	@echo "    fmt"
+	@echo "    install"
+	@echo "    watch"
+	@echo "    lint"
+	@echo "    clean"
+	@echo
 
 edit:
 	vim src/main.rs
