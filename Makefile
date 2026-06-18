@@ -1,9 +1,12 @@
+DUMBER_CUR_VER := 4.0.0
+
 help:
 	@echo "Usage:"
 	@echo
 	@echo "    edit"
 	@echo "    build"
 	@echo "    build-release"
+	@echo "    dist"
 	@echo "    test"
 	@echo "    fmt"
 	@echo "    install"
@@ -14,6 +17,13 @@ help:
 
 edit:
 	vim src/main.rs
+
+dist: build-release
+	rm -rf ~/.tmp/dumber/
+	mkdir ~/.tmp/dumber/
+	cp LICENSE ~/.tmp/dumber/
+	cp target/release/dumber ~/.tmp/dumber/
+	cd ~/.tmp/ && tar -czvf dumber-$(DUMBER_CUR_VER)-linux-86_64.tar.gz dumber/
 
 build:
 	cargo build
