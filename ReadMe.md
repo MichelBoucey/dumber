@@ -1,4 +1,4 @@
-# Dumber ![Compilation & tests](https://github.com/MichelBoucey/dumber/actions/workflows/dumber.yml/badge.svg)
+# Dumber
 
 `dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and creation of table(s) of contents accordingly.
 
@@ -19,7 +19,13 @@ _N.B._ : The table of contents generation is not tested nor implemented for UTF8
 make install
 ```
 
-### 1.2. From ArchLinux AUR
+### 1.2. From crates.io
+
+```
+cargo install dumber
+```
+
+### 1.3. From ArchLinux AUR
 
 Build the ArchLinux package for `dumber` from [AUR](https://aur.archlinux.org/packages/dumber).
 
