@@ -13,11 +13,9 @@ _N.B._ : The table of contents generation is not tested nor implemented for UTF8
 
 ## 1. Installation
 
-### 1.1. From sources
+### 1.1. Dumber pre-built binary
 
-```
-make install
-```
+[Get latest pre-built release of dumber](https://github.com/MichelBoucey/dumber/releases) for Linux-86_64.
 
 ### 1.2. From crates.io
 
@@ -30,6 +28,12 @@ cargo install dumber
 Build the ArchLinux package for `dumber` from [AUR](https://aur.archlinux.org/packages/dumber).
 
 Or with `yay`, run `yay -S dumber`.
+
+### 1.4. From sources
+
+```
+make install
+```
 
 ## 2. Optional test suite
 
@@ -65,6 +69,15 @@ To add a table of contents you have to add a line with the HTML comment **&lt;!-
 
 ```
 <!-- ToC -->
+    - [1.](#1-installation) Installation
+        - [1.1.](#11-dumber-pre-built-binary) Dumber pre-built binary
+        - [1.2.](#12-from-crates.io) From crates.io
+        - [1.3.](#13-from-archlinux-aur) From ArchLinux AUR
+        - [1.4.](#14-from-sources) From sources
+    - [2.](#2-optional-test-suite) Optional test suite
+    - [3.](#3-usage) Usage
+        - [3.1.](#31-command-line-options) Command line options
+        - [3.2.](#32-add-table(s)-of-contents) Add table(s) of contents
 ```
 
 The table of contents will be written just after the HTML comment line, and you can add this comment line as many times as you want, if you are, like me, a big fan of tables of contents, or if the length of your document needs a second table of contents at its end.
