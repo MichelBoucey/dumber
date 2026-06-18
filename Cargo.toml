@@ -11,7 +11,7 @@ repository = "https://github.com/MichelBoucey/dumber"
 readme = "ReadMe.md"
 keywords = ["cli", "markdown", "numbering", "section", "table of content"]
 categories = ["development-tools"]
-exclude = ["aur/*","target/*","test/*", "Makefile","example.md"]
+exclude = [".github/*", ".gitignore", "aur/*", "target/*", "test/*", "Makefile", "example.md"]
 
 [dependencies]
 regex = "1.12.4"
