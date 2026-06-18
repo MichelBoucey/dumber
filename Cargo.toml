@@ -9,7 +9,7 @@ license = "BSD-3-Clause"
 homepage = "https://github.com/MichelBoucey/dumber"
 repository = "https://github.com/MichelBoucey/dumber"
 readme = "ReadMe.md"
-keywords = ["markdown", "cli", "number", "section", "table of content"]
+keywords = ["markdown", "cli", "number", "section", "toc"]
 categories = ["development-tools"]
 exclude = [".github/*", ".gitignore", "aur/*", "target/*", "test/*", "Makefile", "example.md"]
 
