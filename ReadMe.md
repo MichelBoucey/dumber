@@ -7,7 +7,7 @@ With `dumber` (you already use `git`, don't you?) you can add to, update, or rem
 - section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` for numbering *all* section tags.
 - table(s) of contents with links on entries.
 
-See an [example](./example.md).
+See an [example](https://github.com/MichelBoucey/dumber/blob/main/example.md).
 
 _N.B._ : The table of contents generation is not tested nor implemented for UTF8.
 
@@ -37,14 +37,20 @@ make test
 
 ### 3.1. Command line options
 ```
-user@machine $ dumber -h
-Usage: dumber [OPTION] FILE
+user@box $ dumber --help
+A tool to (un)number sections and add/remove toc(s) of a Markdown document
 
-  -a	Numbering all sections from the main document title (H1)
-  -h	Show help
-  -r	Remove table of contents and section numbers from the .md file
-  -v	Show version
-  -w	Write section numbers to the .md file (default to stdout)
+Usage: dumber [OPTIONS] [FILE]
+
+Arguments:
+  [FILE]  The Markdown file to process
+
+Options:
+  -w, --write        Write changes to the .md file (default to stdout)
+  -r, --remove       Remove changes from a modified .md file (default to stdout)
+  -a, --all-headers  Numbering all section headers, starting from the main document title, first H1
+  -v, --version      Print version
+  -h, --help         Print help
 ```
 
 ### 3.2. Add table(s) of contents

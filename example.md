@@ -1,4 +1,4 @@
-<H1>Lorem</H1>
+# Lorem
 
 <!-- ToC -->
 - [1.](#1-lorem-ipsum-dolor) Lorem ipsum dolor

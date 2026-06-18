@@ -1,33 +1,42 @@
-
-COMMIT_SHORT_SHA := $(shell git rev-parse --short HEAD)
-BUILD=go build -o dumber -ldflags "-w -s -buildid= -X 'main.commitShortHash=$(COMMIT_SHORT_SHA)'" -trimpath
-INSTALL_BIN_PATH=/usr/local/bin/dumber
-INSTALL=install -Dm755 dumber ${INSTALL_BIN_PATH}
-
 help:
 	@echo "Usage:"
 	@echo
-	@echo "    make [build|install|clean|distclean|test]"
+	@echo "    edit"
+	@echo "    build"
+	@echo "    build-release"
+	@echo "    test"
+	@echo "    fmt"
+	@echo "    install"
+	@echo "    watch"
+	@echo "    lint"
+	@echo "    clean"
 	@echo
+
+edit:
+	vim src/main.rs
 
 build:
-	${BUILD}
+	cargo build
 
-clean:
-	rm -f dumber test/*sections*
-
-distclean: clean
-	rm -f ${INSTALL_BIN_PATH}
-	
-install: build
-	${INSTALL}
+build-release:
+	cargo build --release
 
 .PHONY: test
-test: clean build
+test: build
 	test/run
-	@echo
+
+fmt:
+	rustfmt src/main.rs
+
+install:
+	cargo install --path .
 
 watch:
-	@which CompileDaemon > /dev/null 2>&1 || (echo "CompileDaemon is required to watch (https://github.com/githubnemo/CompileDaemon)."; exit 1)
-	CompileDaemon -build "${BUILD}" -command "${INSTALL}"
+	bacon
 
+lint:
+	cargo clippy
+
+clean:
+	@cargo clean
+	@rm -f dumber test/*sections*
