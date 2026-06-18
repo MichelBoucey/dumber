@@ -4,7 +4,7 @@
 
 With `dumber` (you already use `git`, don't you?) you can add to, update, or remove from your Mardown files:
 
-- section numbers to header sections. This works on hash sign only. &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` for numbering *all* section tags.
+- section numbers to header sections. *This works on hash sign only*. First &lt;H1&gt; (#) stays unnumbered as the main title. Use `-a` (`--all-headers`) for numbering *all* section tags.
 - table(s) of contents with links on entries.
 
 See an [example](https://github.com/MichelBoucey/dumber/blob/main/example.md).
