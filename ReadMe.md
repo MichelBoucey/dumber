@@ -69,15 +69,6 @@ To add a table of contents you have to add a line with the HTML comment **&lt;!-
 
 ```
 <!-- ToC -->
-    - [1.](#1-installation) Installation
-        - [1.1.](#11-dumber-pre-built-binary) Dumber pre-built binary
-        - [1.2.](#12-from-crates.io) From crates.io
-        - [1.3.](#13-from-archlinux-aur) From ArchLinux AUR
-        - [1.4.](#14-from-sources) From sources
-    - [2.](#2-optional-test-suite) Optional test suite
-    - [3.](#3-usage) Usage
-        - [3.1.](#31-command-line-options) Command line options
-        - [3.2.](#32-add-table(s)-of-contents) Add table(s) of contents
 ```
 
 The table of contents will be written just after the HTML comment line, and you can add this comment line as many times as you want, if you are, like me, a big fan of tables of contents, or if the length of your document needs a second table of contents at its end.
