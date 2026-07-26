@@ -1,7 +1,7 @@
 [package]
 name = "dumber"
 description = "A CLI tool to (un)number sections and add/remove toc(s) of a Markdown document"
-version = "4.0.0"
+version = "4.1.0"
 edition = "2024"
 rust-version = "1.96.0"
 authors = ["Michel Boucey <michel.boucey@gmail.com>"]
