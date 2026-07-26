@@ -35,6 +35,6 @@ pub fn cli() -> Command {
         )
         .arg(
             Arg::new("FILE")
-                .help("The Markdown file to process"),
+                .help("The Markdown file to process, or just - for stdin"),
         )
 }

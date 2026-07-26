@@ -80,3 +80,44 @@ else
     echo "KO"
 fi
 
+# Stdin tests
+echo -n "- Numbering sections from stdin (pipe, no FILE)                      -> "
+
+if [ "$(${DUMBER_PATH} < test/test.md)" == "$(${DUMBER_PATH} test/test.md)" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+echo -n "- Numbering sections from stdin (pipe with -)                        -> "
+
+if [ "$(cat test/test.md | ${DUMBER_PATH} -)" == "$(${DUMBER_PATH} test/test.md)" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+echo -n "- Numbering all sections from stdin (-a flag)                        -> "
+
+if [ "$(${DUMBER_PATH} -a < test/test.md)" == "$(${DUMBER_PATH} -a test/test.md)" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+echo -n "- Unnumbering sections from stdin (-r flag)                          -> "
+
+if [ "$(${DUMBER_PATH} -r < test/numbered-sections.md)" == "$(${DUMBER_PATH} -r test/numbered-sections.md)" ]; then
+    echo "OK"
+else
+    echo "KO"
+fi
+
+echo -n "- --write flag rejected with stdin is used                           -> "
+
+if ${DUMBER_PATH} -w < test/test.md 2>/dev/null; then
+    echo "KO"
+else
+    echo "OK"
+fi
+

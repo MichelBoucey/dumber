@@ -1,4 +1,4 @@
-# Dumber [![CI](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/MichelBoucey/dumber/actions/workflows/rust.yml)
+# Dumber [![CI](https://github.com/MichelBoucey/dumber/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MichelBoucey/dumber/actions/workflows/ci.yml)
 
 `dumber`, a (not so dumb) command line tool for **d**(igital n)**umber**(ing) Markdown document sections and creation of table(s) of contents accordingly.
 
@@ -53,7 +53,7 @@ A tool to (un)number sections and add/remove toc(s) of a Markdown document
 Usage: dumber [OPTIONS] [FILE]
 
 Arguments:
-  [FILE]  The Markdown file to process
+  [FILE]  The Markdown file to process, or just - for stdin
 
 Options:
   -w, --write        Write changes to the .md file (default to stdout)
