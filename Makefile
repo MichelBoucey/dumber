@@ -1,4 +1,4 @@
-DUMBER_CUR_VER := 4.0.0
+DUMBER_CUR_VER := 4.1.0
 
 help:
 	@echo "Usage:"
@@ -19,11 +19,11 @@ edit:
 	vim src/main.rs
 
 dist: build-release
-	rm -rf ~/.tmp/dumber/
-	mkdir ~/.tmp/dumber/
-	cp LICENSE ~/.tmp/dumber/
-	cp target/release/dumber ~/.tmp/dumber/
-	cd ~/.tmp/ && tar -czvf dumber-$(DUMBER_CUR_VER)-linux-86_64.tar.gz dumber/
+	rm -rf ~/.tmp/dumber-*
+	mkdir ~/.tmp/dumber-$(DUMBER_CUR_VER)
+	cp LICENSE ~/.tmp/dumber-$(DUMBER_CUR_VER)/
+	cp target/release/dumber ~/.tmp/dumber-$(DUMBER_CUR_VER)/
+	cd ~/.tmp/ && tar -czvf dumber-$(DUMBER_CUR_VER)-linux-86_64.tar.gz dumber-$(DUMBER_CUR_VER)
 
 build:
 	cargo build
