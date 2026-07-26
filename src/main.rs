@@ -41,121 +41,126 @@ fn main() -> io::Result<()> {
         exit(0)
     }
 
-    if let Some(md_filepath) = matches.get_one::<String>("FILE") {
+    let use_stdin = matches.get_one::<String>("FILE").is_none_or(|f| f == "-");
+
+    if *flag_write && use_stdin {
+        eprintln!("Error: --write cannot be used with stdin");
+        exit(1);
+    }
+
+    let reader: Box<dyn BufRead> = if use_stdin {
+        Box::new(BufReader::new(io::stdin()))
+    } else {
+        let md_filepath = matches.get_one::<String>("FILE").unwrap();
         if !exists(md_filepath).unwrap() {
             println!("{}", md_filepath.to_owned() + " is not a file");
             exit(1)
         }
+        Box::new(BufReader::new(File::open(md_filepath)?))
+    };
 
-        let file = File::open(md_filepath)?;
+    for result in reader.lines() {
+        let line = result.unwrap();
+        let caps = header_line.captures(&line);
 
-        let reader = BufReader::new(file);
+        if let Some(cs) = caps {
+            if header_line.is_match(&line) && cs.len() == 4 {
+                let header = &cs[1];
+                let title = &cs[3];
+                let current_header_type = &cs[1].len();
 
-        for result in reader.lines() {
-            let line = result.unwrap();
-            let caps = header_line.captures(&line);
-
-            if let Some(cs) = caps {
-                if header_line.is_match(&line) && cs.len() == 4 {
-                    let header = &cs[1];
-                    let title = &cs[3];
-                    let current_header_type = &cs[1].len();
-
-                    if first_h1_done || *no_title_skip {
-                        header_counters[*current_header_type] += 1
-                    }
-
-                    if !first_h1_done && *current_header_type == 1 {
-                        first_h1_done = true;
-                    }
-
-                    if *flag_remove {
-                        rewritten_line = header.to_owned() + " " + title
-                    } else {
-                        for (header_type, _) in header_counters.iter().enumerate().skip(1) {
-                            internal::add_section_chunk(
-                                &mut section,
-                                &header_counters[header_type],
-                                current_header_type,
-                                &header_type,
-                            );
-                        }
-
-                        if !section.is_empty() {
-                            section += " "
-                        }
-
-                        rewritten_line = header.to_owned() + " " + &*section + title;
-
-                        header_lines.push(rewritten_line.clone());
-
-                        for v in header_counters.iter_mut().skip(current_header_type + 1) {
-                            *v = 0;
-                        }
-
-                        section = "".to_string();
-                    }
+                if first_h1_done || *no_title_skip {
+                    header_counters[*current_header_type] += 1
                 }
 
-                rewritten_lines.push(rewritten_line.clone());
-            } else if !toc_line.is_match(&line) {
-                if toc_insertion_line.is_match(&line) {
-                    is_toc_insertion_line = true
+                if !first_h1_done && *current_header_type == 1 {
+                    first_h1_done = true;
                 }
-                rewritten_lines.push(line);
-            }
-        }
 
-        if !flag_remove && is_toc_insertion_line {
-            let first_header_line = header_line.captures(&header_lines[0]).unwrap();
-            upper_header_level = first_header_line[1].len()
-        }
-
-        if *flag_write {
-            let file = File::create(md_filepath)?;
-            let mut writer = BufWriter::new(file);
-            for rewritten_line in rewritten_lines {
-                writeln!(writer, "{}", rewritten_line)?;
-                if !flag_remove
-                    && is_toc_insertion_line
-                    && toc_insertion_line.is_match(&rewritten_line)
-                {
-                    for hline in header_lines.clone().into_iter().skip(1) {
-                        writeln!(
-                            writer,
-                            "{}",
-                            to_toc_entry(
-                                upper_header_level,
-                                header_line.clone(),
-                                hline.to_string()
-                            )
-                        )?
+                if *flag_remove {
+                    rewritten_line = header.to_owned() + " " + title
+                } else {
+                    for (header_type, _) in header_counters.iter().enumerate().skip(1) {
+                        internal::add_section_chunk(
+                            &mut section,
+                            &header_counters[header_type],
+                            current_header_type,
+                            &header_type,
+                        );
                     }
+
+                    if !section.is_empty() {
+                        section += " "
+                    }
+
+                    rewritten_line = header.to_owned() + " " + &*section + title;
+
+                    header_lines.push(rewritten_line.clone());
+
+                    for v in header_counters.iter_mut().skip(current_header_type + 1) {
+                        *v = 0;
+                    }
+
+                    section = "".to_string();
                 }
             }
-        } else {
-            for rewritten_line in rewritten_lines {
-                println!("{}", rewritten_line);
-                if !flag_remove
-                    && is_toc_insertion_line
-                    && toc_insertion_line.is_match(&rewritten_line)
-                {
-                    for hline in header_lines.clone().into_iter().skip(1) {
-                        println!(
-                            "{}",
-                            to_toc_entry(
-                                upper_header_level,
-                                header_line.clone(),
-                                hline.to_string()
-                            )
+
+            rewritten_lines.push(rewritten_line.clone());
+        } else if !toc_line.is_match(&line) {
+            if toc_insertion_line.is_match(&line) {
+                is_toc_insertion_line = true
+            }
+            rewritten_lines.push(line);
+        }
+    }
+
+    if !flag_remove && is_toc_insertion_line {
+        let first_header_line = header_line.captures(&header_lines[0]).unwrap();
+        upper_header_level = first_header_line[1].len()
+    }
+
+    if *flag_write {
+        let md_filepath = matches.get_one::<String>("FILE").unwrap();
+        let file = File::create(md_filepath)?;
+        let mut writer = BufWriter::new(file);
+        for rewritten_line in rewritten_lines {
+            writeln!(writer, "{}", rewritten_line)?;
+            if !flag_remove
+                && is_toc_insertion_line
+                && toc_insertion_line.is_match(&rewritten_line)
+            {
+                for hline in header_lines.clone().into_iter().skip(1) {
+                    writeln!(
+                        writer,
+                        "{}",
+                        to_toc_entry(
+                            upper_header_level,
+                            header_line.clone(),
+                            hline.to_string()
                         )
-                    }
+                    )?
                 }
             }
         }
     } else {
-        println!("Usage: dumber [OPTIONS] [FILE]");
-        println!("Specify the --help flag to see full usage")
+        for rewritten_line in rewritten_lines {
+            println!("{}", rewritten_line);
+            if !flag_remove
+                && is_toc_insertion_line
+                && toc_insertion_line.is_match(&rewritten_line)
+            {
+                for hline in header_lines.clone().into_iter().skip(1) {
+                    println!(
+                        "{}",
+                        to_toc_entry(
+                            upper_header_level,
+                            header_line.clone(),
+                            hline.to_string()
+                        )
+                    )
+                }
+            }
+        }
     }
 
     Ok(())

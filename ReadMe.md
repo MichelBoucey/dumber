@@ -53,7 +53,7 @@ A tool to (un)number sections and add/remove toc(s) of a Markdown document
 Usage: dumber [OPTIONS] [FILE]
 
 Arguments:
-  [FILE]  The Markdown file to process
+  [FILE]  The Markdown file to process, or just - for stdin
 
 Options:
   -w, --write        Write changes to the .md file (default to stdout)
