@@ -6,17 +6,22 @@ pub fn add_section_chunk(s: &mut String, hc: &i8, cht: &usize, ht: &usize) {
     }
 }
 
-pub fn to_toc_entry(u: usize, r: Regex, l: String) -> String {
-    let m = r.captures(&l).unwrap();
+pub fn to_toc_entry(u: usize, r: &Regex, l: &str) -> String {
+    let m = r.captures(l).unwrap();
     let c = m[1].len() - u;
+    let mut entry = String::with_capacity(c * 4 + m[2].len() + m[3].len() * 2 + 6);
 
-    "    ".to_string().repeat(c)
-        + "- ["
-        + &m[2]
-        + "](#"
-        + &m[2].to_string().replace(".", "")
-        + "-"
-        + &m[3].replace(" ", "-").to_lowercase()
-        + ") "
-        + &m[3]
+    for _ in 0..c {
+        entry.push_str("    ");
+    }
+    entry.push_str("- [");
+    entry.push_str(&m[2]);
+    entry.push_str("](#");
+    entry.push_str(&m[2].replace(".", ""));
+    entry.push('-');
+    entry.push_str(&m[3].replace(" ", "-").to_lowercase());
+    entry.push_str(") ");
+    entry.push_str(&m[3]);
+
+    entry
 }
