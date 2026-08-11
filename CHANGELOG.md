@@ -1,6 +1,10 @@
 # Revision history for dumber
 
-## 4.0.0 -- 2026-07-26
+## 4.1.1 -- 2026-08-11
+
+* Speedup improvements
+
+## 4.1.0 -- 2026-07-26
 
 * Add stdin support
 
