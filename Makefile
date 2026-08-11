@@ -1,4 +1,4 @@
-DUMBER_CUR_VER := 4.1.0
+DUMBER_CUR_VER := $(shell cargo pkgid | cut -d "#" -f2)
 
 help:
 	@echo "Usage:"
@@ -24,6 +24,7 @@ dist: build-release
 	cp LICENSE ~/.tmp/dumber-$(DUMBER_CUR_VER)/
 	cp target/release/dumber ~/.tmp/dumber-$(DUMBER_CUR_VER)/
 	cd ~/.tmp/ && tar -czvf dumber-$(DUMBER_CUR_VER)-linux-86_64.tar.gz dumber-$(DUMBER_CUR_VER)
+	rm -rf ~/.tmp/dumber-$(DUMBER_CUR_VER)/
 
 build:
 	cargo build
